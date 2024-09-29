@@ -4,7 +4,7 @@ description = "Bindings to ScreenCaptureKit framework"
 homepage = "https://github.com/libark/apple-media-rs"
 repository = "https://github.com/libark/apple-media-rs"
 documentation = "https://docs.rs/screen-capture-kit"
-version = "0.2.3"
+version = "0.3.0"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia", "os::macos-apis"]
@@ -13,9 +13,9 @@ edition = "2018"
 
 [dependencies]
 block2 = "0.5"
-core-foundation = { version = "0.9", default-features = false }
-core-graphics2 = { version = "0.3", path = "../core-graphics", default-features = false, features = ["display", "objc", "window"]}
-core-media = { version = "0.4", path = "../core-media", default-features = false, features = ["objc"] }
+core-foundation = { version = "0.10", default-features = false }
+core-graphics2 = { version = "0.4", path = "../core-graphics", default-features = false, features = ["display", "objc", "window"]}
+core-media = { version = "0.5", path = "../core-media", default-features = false, features = ["objc"] }
 dispatch2 = "0.1"
 libc = "0.2"
 objc2 = "0.5"
@@ -23,7 +23,7 @@ objc2-foundation = { version = "0.2", features = ["NSArray", "NSDictionary", "NS
 
 [dev-dependencies]
 core-audio-types = { version = "0.1", path = "../core-audio-types" }
-core-video = { version = "0.3", path = "../core-video", features = ["objc"] }
+core-video = { version = "0.4", path = "../core-video", features = ["objc"] }
 
 [features]
 default = ["link"]

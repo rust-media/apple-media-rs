@@ -4,7 +4,7 @@ description = "Safe bindings to CoreMedia framework"
 homepage = "https://github.com/libark/apple-media-rs"
 repository = "https://github.com/libark/apple-media-rs"
 documentation = "https://docs.rs/core-media"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia", "os::macos-apis"]
@@ -15,9 +15,9 @@ edition = "2018"
 block = "0.1"
 cfg-if = "1.0"
 core-audio-types = { version = "0.1", path = "../core-audio-types", default-features = false}
-core-foundation = { version = "0.9", default-features = false }
-core-graphics2 = { version = "0.3", path = "../core-graphics", default-features = false }
-core-video = { version = "0.3", path = "../core-video", default-features = false }
+core-foundation = { version = "0.10", default-features = false }
+core-graphics2 = { version = "0.4", path = "../core-graphics", default-features = false }
+core-video = { version = "0.4", path = "../core-video", default-features = false }
 libc = "0.2"
 objc2 = { version = "0.5", optional = true }
 

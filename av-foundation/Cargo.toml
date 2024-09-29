@@ -4,7 +4,7 @@ description = "Bindings to AVFoundation framework"
 homepage = "https://github.com/libark/apple-media-rs"
 repository = "https://github.com/libark/apple-media-rs"
 documentation = "https://docs.rs/av-foundation"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia::video", "os::macos-apis"]
@@ -12,9 +12,9 @@ keywords = ["avfoundation", "camera", "capture"]
 edition = "2018"
 
 [dependencies]
-core-foundation = { version = "0.9", default-features = false }
-core-media = { version = "0.4", path = "../core-media", default-features = false, features = ["objc"] }
-core-video = { version = "0.3", path = "../core-video", default-features = false, features = ["objc"] }
+core-foundation = { version = "0.10", default-features = false }
+core-media = { version = "0.5", path = "../core-media", default-features = false, features = ["objc"] }
+core-video = { version = "0.4", path = "../core-video", default-features = false, features = ["objc"] }
 dispatch2 = "0.1"
 libc = "0.2"
 objc2 = "0.5"
