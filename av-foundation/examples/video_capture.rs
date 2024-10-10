@@ -1,5 +1,8 @@
 use av_foundation::{
-    capture_device::AVCaptureDevice,
+    capture_device::{
+        AVCaptureDevice, AVCaptureDeviceDiscoverySession, AVCaptureDevicePositionUnspecified, AVCaptureDeviceTypeBuiltInWideAngleCamera,
+        AVCaptureDeviceTypeExternal, AVCaptureDeviceTypeExternalUnknown,
+    },
     capture_input::AVCaptureDeviceInput,
     capture_output_base::AVCaptureOutput,
     capture_session::{AVCaptureConnection, AVCaptureSession},
@@ -16,7 +19,8 @@ use objc2::{
     runtime::ProtocolObject,
     ClassType, DeclaredClass,
 };
-use objc2_foundation::{NSObject, NSObjectProtocol};
+use objc2_foundation::{NSMutableArray, NSObject, NSObjectProtocol};
+use os_ver::{if_greater_than, Version, OS_VERSION};
 
 pub struct DelegateIvars {}
 
@@ -69,13 +73,72 @@ extern_methods!(
 );
 
 fn main() {
+    let devices = unsafe {
+        if cfg!(target_os = "macos") {
+            if_greater_than!((10, 15) => {
+                let mut device_types = NSMutableArray::new();
+
+                device_types.addObject(AVCaptureDeviceTypeBuiltInWideAngleCamera);
+                if_greater_than!((14) => {
+                    device_types.addObject(AVCaptureDeviceTypeExternal);
+                } else {
+                    device_types.addObject(AVCaptureDeviceTypeExternalUnknown);
+                });
+                device_types.addObject(AVCaptureDeviceTypeExternalUnknown);
+
+                AVCaptureDeviceDiscoverySession::discovery_session_with_device_types(
+                    &device_types,
+                    AVMediaTypeVideo,
+                    AVCaptureDevicePositionUnspecified,
+                ).devices()
+            } else {
+                AVCaptureDevice::devices_with_media_type(AVMediaTypeVideo)
+            })
+        } else if cfg!(target_os = "ios") {
+            if_greater_than!((10) => {
+                let mut device_types = NSMutableArray::new();
+
+                device_types.addObject(AVCaptureDeviceTypeBuiltInWideAngleCamera);
+
+                AVCaptureDeviceDiscoverySession::discovery_session_with_device_types(
+                    &device_types,
+                    AVMediaTypeVideo,
+                    AVCaptureDevicePositionUnspecified,
+                ).devices()
+            } else {
+                AVCaptureDevice::devices_with_media_type(AVMediaTypeVideo)
+            })
+        } else {
+            println!("Unsupported platform");
+            return;
+        }
+    };
+
+    for device in devices.iter() {
+        println!("name: {:?}", device.localized_name());
+        println!("id: {:?}", device.unique_id());
+        println!("model: {:?}", device.model_id());
+        println!("manufacturer: {:?}", device.manufacturer());
+        println!("device type: {:?}", device.device_type());
+        println!("transport type: {:?}", String::from_utf8_lossy(&device.transport_type().to_be_bytes()));
+        println!("position: {:?}", device.position());
+    }
+
+    let device = match devices.first() {
+        Some(device) => device,
+        None => {
+            println!("No video capture device found");
+            return;
+        }
+    };
+
     let session = AVCaptureSession::new();
-    let device: Id<AVCaptureDevice> = unsafe { AVCaptureDevice::default_device_with_media_type(AVMediaTypeVideo).unwrap() };
-    let input = AVCaptureDeviceInput::from_device(&device).unwrap();
+    let input = AVCaptureDeviceInput::from_device(device).unwrap();
     let output = AVCaptureVideoDataOutput::new();
     let delegate = Delegate::new();
     let delegate = ProtocolObject::from_ref(&*delegate);
     let queue = Queue::new("com.video_capture.queue", dispatch2::QueueAttribute::Serial);
+
     output.set_sample_buffer_delegate(delegate, &queue);
     output.set_always_discards_late_video_frames(true);
 
