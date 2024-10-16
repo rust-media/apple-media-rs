@@ -35,7 +35,7 @@ extern "C" {
     pub fn CVBufferGetAttachments(buffer: CVBufferRef, attachmentMode: CVAttachmentMode) -> CFDictionaryRef;
     pub fn CVBufferSetAttachments(buffer: CVBufferRef, theAttachments: CFDictionaryRef, attachmentMode: CVAttachmentMode);
     pub fn CVBufferPropagateAttachments(sourceBuffer: CVBufferRef, destinationBuffer: CVBufferRef);
-    pub fn CVBufferCopyAttachments(sourceBuffer: CVBufferRef, attachmentMode: *mut CVAttachmentMode) -> CFDictionaryRef;
+    pub fn CVBufferCopyAttachments(sourceBuffer: CVBufferRef, attachmentMode: CVAttachmentMode) -> CFDictionaryRef;
     pub fn CVBufferCopyAttachment(buffer: CVBufferRef, key: CFStringRef, attachmentMode: *mut CVAttachmentMode) -> CFTypeRef;
     pub fn CVBufferHasAttachment(buffer: CVBufferRef, key: CFStringRef) -> Boolean;
 }
@@ -211,8 +211,12 @@ impl CVBuffer {
     }
 
     #[inline]
-    pub fn get_attachment(&self, key: &CFString, attachment_mode: &mut CVAttachmentMode) -> Option<CFType> {
+    pub fn get_attachment(&self, key: &CFString, attachment_mode: Option<&mut CVAttachmentMode>) -> Option<CFType> {
         unsafe {
+            let attachment_mode = match attachment_mode {
+                Some(attachment_mode) => attachment_mode as *mut CVAttachmentMode,
+                None => std::ptr::null_mut(),
+            };
             let value = CVBufferGetAttachment(self.as_concrete_TypeRef(), key.as_concrete_TypeRef(), attachment_mode);
             if value.is_null() {
                 None
@@ -263,7 +267,7 @@ impl CVBuffer {
     }
 
     #[inline]
-    pub fn copy_attachments(&self, attachment_mode: &mut CVAttachmentMode) -> Option<CFDictionary<CFString, CFType>> {
+    pub fn copy_attachments(&self, attachment_mode: CVAttachmentMode) -> Option<CFDictionary<CFString, CFType>> {
         unsafe {
             let attachments = CVBufferCopyAttachments(self.as_concrete_TypeRef(), attachment_mode);
             if attachments.is_null() {
@@ -275,8 +279,12 @@ impl CVBuffer {
     }
 
     #[inline]
-    pub fn copy_attachment(&self, key: &CFString, attachment_mode: &mut CVAttachmentMode) -> Option<CFType> {
+    pub fn copy_attachment(&self, key: &CFString, attachment_mode: Option<&mut CVAttachmentMode>) -> Option<CFType> {
         unsafe {
+            let attachment_mode = match attachment_mode {
+                Some(attachment_mode) => attachment_mode as *mut CVAttachmentMode,
+                None => std::ptr::null_mut(),
+            };
             let attachment = CVBufferCopyAttachment(self.as_concrete_TypeRef(), key.as_concrete_TypeRef(), attachment_mode);
             if attachment.is_null() {
                 None
