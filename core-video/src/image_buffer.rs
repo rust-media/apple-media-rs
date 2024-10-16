@@ -384,15 +384,15 @@ impl From<CVImageBufferAlphaChannelMode> for CFString {
     }
 }
 
-pub fn ycbcr_matrix_get_integer_code_point_for_string(ycbcr_matrix_string: CFString) -> i32 {
+pub fn ycbcr_matrix_get_integer_code_point_for_string(ycbcr_matrix_string: &CFString) -> i32 {
     unsafe { CVYCbCrMatrixGetIntegerCodePointForString(ycbcr_matrix_string.as_concrete_TypeRef()) }
 }
 
-pub fn color_primaries_get_integer_code_point_for_string(color_primaries_string: CFString) -> i32 {
+pub fn color_primaries_get_integer_code_point_for_string(color_primaries_string: &CFString) -> i32 {
     unsafe { CVColorPrimariesGetIntegerCodePointForString(color_primaries_string.as_concrete_TypeRef()) }
 }
 
-pub fn transfer_function_get_integer_code_point_for_string(transfer_function_string: CFString) -> i32 {
+pub fn transfer_function_get_integer_code_point_for_string(transfer_function_string: &CFString) -> i32 {
     unsafe { CVTransferFunctionGetIntegerCodePointForString(transfer_function_string.as_concrete_TypeRef()) }
 }
 
