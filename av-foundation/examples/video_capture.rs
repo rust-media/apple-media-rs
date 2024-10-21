@@ -20,7 +20,7 @@ use objc2::{
     ClassType, DeclaredClass,
 };
 use objc2_foundation::{NSMutableArray, NSObject, NSObjectProtocol};
-use os_ver::{if_greater_than, Version, OS_VERSION};
+use os_ver::if_greater_than;
 
 pub struct DelegateIvars {}
 
@@ -75,15 +75,15 @@ extern_methods!(
 fn main() {
     let devices = unsafe {
         if cfg!(target_os = "macos") {
-            if_greater_than!((10, 15) => {
+            if_greater_than! {(10, 15) => {
                 let mut device_types = NSMutableArray::new();
 
                 device_types.addObject(AVCaptureDeviceTypeBuiltInWideAngleCamera);
-                if_greater_than!((14) => {
+                if_greater_than!{(14) => {
                     device_types.addObject(AVCaptureDeviceTypeExternal);
                 } else {
                     device_types.addObject(AVCaptureDeviceTypeExternalUnknown);
-                });
+                }};
                 device_types.addObject(AVCaptureDeviceTypeExternalUnknown);
 
                 AVCaptureDeviceDiscoverySession::discovery_session_with_device_types(
@@ -93,9 +93,9 @@ fn main() {
                 ).devices()
             } else {
                 AVCaptureDevice::devices_with_media_type(AVMediaTypeVideo)
-            })
+            }}
         } else if cfg!(target_os = "ios") {
-            if_greater_than!((10) => {
+            if_greater_than! {(10) => {
                 let mut device_types = NSMutableArray::new();
 
                 device_types.addObject(AVCaptureDeviceTypeBuiltInWideAngleCamera);
@@ -107,7 +107,7 @@ fn main() {
                 ).devices()
             } else {
                 AVCaptureDevice::devices_with_media_type(AVMediaTypeVideo)
-            })
+            }}
         } else {
             println!("Unsupported platform");
             return;

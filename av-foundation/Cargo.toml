@@ -22,7 +22,7 @@ objc2 = "0.5"
 objc2-foundation = { version = "0.2", features = ["NSArray", "NSDictionary", "NSEnumerator", "NSError", "NSRange", "NSString", "NSValue"] }
 
 [dev-dependencies]
-os-ver = "0.1"
+os-ver = "0.2"
 
 [features]
 default = ["capture", "link"]
