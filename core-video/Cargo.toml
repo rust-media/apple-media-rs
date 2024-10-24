@@ -1,10 +1,10 @@
 [package]
 name = "core-video"
 description = "Safe bindings to CoreVideo framework"
-homepage = "https://github.com/libark/apple-media-rs"
-repository = "https://github.com/libark/apple-media-rs"
+homepage = "https://github.com/rust-media/apple-media-rs"
+repository = "https://github.com/rust-media/apple-media-rs"
 documentation = "https://docs.rs/core-video"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia::video", "os::macos-apis"]
