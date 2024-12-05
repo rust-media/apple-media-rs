@@ -4,7 +4,7 @@ description = "Bindings to AVFoundation framework"
 homepage = "https://github.com/rust-media/apple-media-rs"
 repository = "https://github.com/rust-media/apple-media-rs"
 documentation = "https://docs.rs/av-foundation"
-version = "0.5.1"
+version = "0.5.2"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia::video", "os::macos-apis"]
@@ -12,6 +12,7 @@ keywords = ["avfoundation", "camera", "capture"]
 edition = "2018"
 
 [dependencies]
+block2 = "0.5"
 core-foundation = { version = "0.10", default-features = false }
 core-media = { version = "0.5", path = "../core-media", default-features = false, features = ["objc"] }
 core-graphics2 = { version = "0.4", path = "../core-graphics", default-features = false, features = ["objc"] }
