@@ -1,3 +1,4 @@
+use block2::RcBlock;
 use core_foundation::base::TCFType;
 use core_graphics::{base::CGFloat, geometry::CGPoint};
 use core_media::{
@@ -731,6 +732,13 @@ pub const AVAuthorizationStatusAuthorized: AVAuthorizationStatus = 3;
 impl AVCaptureDevice {
     pub fn authorization_status_for_media_type(media_type: &AVMediaType) -> AVAuthorizationStatus {
         unsafe { msg_send![AVCaptureDevice::class(), authorizationStatusForMediaType: media_type] }
+    }
+
+    pub fn request_access_for_media_type<F>(media_type: &AVMediaType, handler: F)
+    where
+        F: Fn(Bool) + 'static,
+    {
+        unsafe { msg_send![AVCaptureDevice::class(), requestAccessForMediaType: media_type completionHandler: &*RcBlock::new(handler)] }
     }
 }
 
