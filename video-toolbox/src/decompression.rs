@@ -2,7 +2,8 @@ use core_foundation::base::{Boolean, CFAllocatorRef, CFTypeID, CFTypeRef, OSStat
 use core_foundation::dictionary::CFDictionaryRef;
 use core_foundation::string::CFStringRef;
 use core_media::format_description::{CMFormatDescriptionRef, CMVideoFormatDescriptionRef};
-use core_media::{sample_buffer::CMSampleBufferRef, time::CMTime};
+use core_media::sample_buffer::CMSampleBufferRef;
+use core_media::time::CMTime;
 use core_video::{image_buffer::CVImageBufferRef, pixel_buffer::CVPixelBufferRef};
 use libc::c_void;
 

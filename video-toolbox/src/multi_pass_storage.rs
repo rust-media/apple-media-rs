@@ -1,8 +1,8 @@
-use core_foundation_sys::base::{CFAllocatorRef, CFTypeID, CFTypeRef, OSStatus};
-use core_foundation_sys::dictionary::CFDictionaryRef;
-use core_foundation_sys::string::CFStringRef;
-use core_foundation_sys::url::CFURLRef;
-use core_media_sys::CMTimeRange;
+use core_foundation::base::{CFAllocatorRef, CFTypeID, CFTypeRef, OSStatus};
+use core_foundation::dictionary::CFDictionaryRef;
+use core_foundation::string::CFStringRef;
+use core_foundation::url::CFURLRef;
+use core_media::time_range::CMTimeRange;
 
 pub type VTMultiPassStorageRef = CFTypeRef;
 

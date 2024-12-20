@@ -1,6 +1,6 @@
-use core_foundation_sys::base::{CFAllocatorRef, CFTypeID, CFTypeRef, OSStatus};
-use core_foundation_sys::string::CFStringRef;
-use core_video_sys::CVPixelBufferRef;
+use core_foundation::base::{CFAllocatorRef, CFTypeID, CFTypeRef, OSStatus};
+use core_foundation::string::CFStringRef;
+use core_video::pixel_buffer::CVPixelBufferRef;
 
 pub type VTPixelTransferSessionRef = CFTypeRef;
 
@@ -21,10 +21,7 @@ extern "C" {
     pub static kVTPixelTransferPropertyKey_DestinationICCProfile: CFStringRef;
     pub static kVTPixelTransferPropertyKey_DestinationYCbCrMatrix: CFStringRef;
 
-    pub fn VTPixelTransferSessionCreate(
-        allocator: CFAllocatorRef,
-        pixelTransferSessionOut: VTPixelTransferSessionRef,
-    ) -> OSStatus;
+    pub fn VTPixelTransferSessionCreate(allocator: CFAllocatorRef, pixelTransferSessionOut: VTPixelTransferSessionRef) -> OSStatus;
     pub fn VTPixelTransferSessionTransferImage(
         session: VTPixelTransferSessionRef,
         sourceBuffer: CVPixelBufferRef,

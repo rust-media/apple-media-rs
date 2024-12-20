@@ -2,7 +2,8 @@ use core_foundation::base::{CFAllocatorRef, CFTypeID, CFTypeRef, OSStatus};
 use core_foundation::dictionary::CFDictionaryRef;
 use core_foundation::url::CFURLRef;
 use core_media::base::CMItemCount;
-use core_mediaCMSampleBufferRef, CMTimeRange};
+use core_media::sample_buffer::CMSampleBufferRef;
+use core_media::time_range::CMTimeRange;
 use libc::{c_float, c_void};
 
 pub type VTFrameSiloRef = CFTypeRef;

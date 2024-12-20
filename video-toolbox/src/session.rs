@@ -1,6 +1,6 @@
-use core_foundation_sys::base::{CFAllocatorRef, CFTypeRef, OSStatus};
-use core_foundation_sys::dictionary::CFDictionaryRef;
-use core_foundation_sys::string::CFStringRef;
+use core_foundation::base::{CFAllocatorRef, CFTypeRef, OSStatus};
+use core_foundation::dictionary::CFDictionaryRef;
+use core_foundation::string::CFStringRef;
 use libc::c_void;
 
 pub type VTSessionRef = CFTypeRef;
@@ -23,29 +23,15 @@ extern "C" {
     pub static kVTPropertySupportedValueListKey: CFStringRef;
     pub static kVTPropertyDocumentationKey: CFStringRef;
 
-    pub fn VTSessionSetProperty(
-        session: VTSessionRef,
-        propertyKey: CFStringRef,
-        propertyValue: CFTypeRef,
-    ) -> OSStatus;
-    pub fn VTSessionSetProperties(
-        session: VTSessionRef,
-        propertyDictionary: CFDictionaryRef,
-    ) -> OSStatus;
+    pub fn VTSessionSetProperty(session: VTSessionRef, propertyKey: CFStringRef, propertyValue: CFTypeRef) -> OSStatus;
+    pub fn VTSessionSetProperties(session: VTSessionRef, propertyDictionary: CFDictionaryRef) -> OSStatus;
     pub fn VTSessionCopyProperty(
         session: VTSessionRef,
         propertyKey: CFStringRef,
         allocator: CFAllocatorRef,
         propertyValueOut: *mut c_void,
     ) -> OSStatus;
-    pub fn VTSessionCopySerializableProperties(
-        session: VTSessionRef,
-        allocator: CFAllocatorRef,
-        dictionaryOut: *mut CFDictionaryRef,
-    ) -> OSStatus;
-    pub fn VTSessionCopySupportedPropertyDictionary(
-        session: VTSessionRef,
-        supportedPropertyDictionaryOut: *mut CFDictionaryRef,
-    ) -> OSStatus;
+    pub fn VTSessionCopySerializableProperties(session: VTSessionRef, allocator: CFAllocatorRef, dictionaryOut: *mut CFDictionaryRef) -> OSStatus;
+    pub fn VTSessionCopySupportedPropertyDictionary(session: VTSessionRef, supportedPropertyDictionaryOut: *mut CFDictionaryRef) -> OSStatus;
 
 }
