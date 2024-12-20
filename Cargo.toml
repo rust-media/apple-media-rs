@@ -1,2 +1,2 @@
 [workspace]
-members = ["core-audio-types", "core-graphics", "core-video", "core-media", "av-foundation", "screen-capture-kit"]
+members = ["core-audio-types", "core-graphics", "core-video", "core-media", "av-foundation", "screen-capture-kit", "video-toolbox"]
