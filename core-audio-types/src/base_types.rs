@@ -3,18 +3,9 @@ use libc::{c_long, c_void};
 
 use crate::OSType;
 
-cfg_if! {
-    if #[cfg(all(target_os = "ios", not(target_os = "macos")))] {
-        const CA_PREFER_FIXED_POINT: bool = true;
-    } else {
-        #[allow(dead_code)]
-        const CA_PREFER_FIXED_POINT: bool = false;
-    }
-}
-
 #[inline]
 const fn fourcc(code: &[u8; 4]) -> u32 {
-    (((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | ((code[3] as u32) << 0)) as u32
+    ((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | (code[3] as u32)
 }
 
 pub const kAudio_NoError: OSStatus = 0;
@@ -58,7 +49,7 @@ pub struct AudioBufferList {
 }
 
 cfg_if! {
-    if #[cfg(not(CA_PREFER_FIXED_POINT))] {
+    if #[cfg(not(feature = "prefer-fixed-point"))] {
         pub type AudioSampleType = f32;
         pub type AudioUnitSampleType = f32;
     } else {
@@ -163,7 +154,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(CA_PREFER_FIXED_POINT))] {
+    if #[cfg(not(feature = "prefer-fixed-point"))] {
         pub const kAudioFormatFlagsCanonical: AudioFormatFlags =
             kAudioFormatFlagIsFloat | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
         pub const kAudioFormatFlagsAudioUnitCanonical: AudioFormatFlags = kAudioFormatFlagIsFloat
@@ -215,6 +206,7 @@ pub fn CalculateLPCMFlags(
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 #[inline]
 pub fn FillOutASBDForLPCM(
     outASBD: &mut AudioStreamBasicDescription,
@@ -449,7 +441,7 @@ pub const kAudioChannelLabel_HeadphonesRight: AudioChannelLabel = 302;
 pub const kAudioChannelLabel_ClickTrack: AudioChannelLabel = 304;
 pub const kAudioChannelLabel_ForeignLanguage: AudioChannelLabel = 305;
 pub const kAudioChannelLabel_Discrete: AudioChannelLabel = 400;
-pub const kAudioChannelLabel_Discrete_0: AudioChannelLabel = (1 << 16) | 0;
+pub const kAudioChannelLabel_Discrete_0: AudioChannelLabel = 1 << 16;
 pub const kAudioChannelLabel_Discrete_1: AudioChannelLabel = (1 << 16) | 1;
 pub const kAudioChannelLabel_Discrete_2: AudioChannelLabel = (1 << 16) | 2;
 pub const kAudioChannelLabel_Discrete_3: AudioChannelLabel = (1 << 16) | 3;
@@ -467,7 +459,7 @@ pub const kAudioChannelLabel_Discrete_14: AudioChannelLabel = (1 << 16) | 14;
 pub const kAudioChannelLabel_Discrete_15: AudioChannelLabel = (1 << 16) | 15;
 pub const kAudioChannelLabel_Discrete_65535: AudioChannelLabel = (1 << 16) | 65535;
 pub const kAudioChannelLabel_HOA_ACN: AudioChannelLabel = 500;
-pub const kAudioChannelLabel_HOA_ACN_0: AudioChannelLabel = (2 << 16) | 0;
+pub const kAudioChannelLabel_HOA_ACN_0: AudioChannelLabel = 2 << 16;
 pub const kAudioChannelLabel_HOA_ACN_1: AudioChannelLabel = (2 << 16) | 1;
 pub const kAudioChannelLabel_HOA_ACN_2: AudioChannelLabel = (2 << 16) | 2;
 pub const kAudioChannelLabel_HOA_ACN_3: AudioChannelLabel = (2 << 16) | 3;
@@ -538,8 +530,8 @@ pub const kAudioChannelCoordinates_Distance: AudioChannelCoordinateIndex = 2;
 
 pub type AudioChannelLayoutTag = u32;
 
-pub const kAudioChannelLayoutTag_UseChannelDescriptions: AudioChannelLayoutTag = (0 << 16) | 0;
-pub const kAudioChannelLayoutTag_UseChannelBitmap: AudioChannelLayoutTag = (1 << 16) | 0;
+pub const kAudioChannelLayoutTag_UseChannelDescriptions: AudioChannelLayoutTag = 0;
+pub const kAudioChannelLayoutTag_UseChannelBitmap: AudioChannelLayoutTag = 1 << 16;
 pub const kAudioChannelLayoutTag_Mono: AudioChannelLayoutTag = (100 << 16) | 1;
 pub const kAudioChannelLayoutTag_Stereo: AudioChannelLayoutTag = (101 << 16) | 2;
 pub const kAudioChannelLayoutTag_StereoHeadphones: AudioChannelLayoutTag = (102 << 16) | 2;
@@ -673,8 +665,8 @@ pub const kAudioChannelLayoutTag_WAVE_5_1_A: AudioChannelLayoutTag = kAudioChann
 pub const kAudioChannelLayoutTag_WAVE_5_1_B: AudioChannelLayoutTag = (187 << 16) | 6;
 pub const kAudioChannelLayoutTag_WAVE_6_1: AudioChannelLayoutTag = (188 << 16) | 7;
 pub const kAudioChannelLayoutTag_WAVE_7_1: AudioChannelLayoutTag = (189 << 16) | 8;
-pub const kAudioChannelLayoutTag_HOA_ACN_SN3D: AudioChannelLayoutTag = (190 << 16) | 0;
-pub const kAudioChannelLayoutTag_HOA_ACN_N3D: AudioChannelLayoutTag = (191 << 16) | 0;
+pub const kAudioChannelLayoutTag_HOA_ACN_SN3D: AudioChannelLayoutTag = 190 << 16;
+pub const kAudioChannelLayoutTag_HOA_ACN_N3D: AudioChannelLayoutTag = 191 << 16;
 pub const kAudioChannelLayoutTag_Atmos_5_1_2: AudioChannelLayoutTag = (194 << 16) | 8;
 pub const kAudioChannelLayoutTag_Atmos_5_1_4: AudioChannelLayoutTag = (195 << 16) | 10;
 pub const kAudioChannelLayoutTag_Atmos_7_1_2: AudioChannelLayoutTag = (196 << 16) | 10;
@@ -713,7 +705,7 @@ pub const kAudioChannelLayoutTag_Logic_Atmos_7_1_2: AudioChannelLayoutTag = kAud
 pub const kAudioChannelLayoutTag_Logic_Atmos_7_1_4_A: AudioChannelLayoutTag = kAudioChannelLayoutTag_Atmos_7_1_4;
 pub const kAudioChannelLayoutTag_Logic_Atmos_7_1_4_B: AudioChannelLayoutTag = (202 << 16) | 12;
 pub const kAudioChannelLayoutTag_Logic_Atmos_7_1_6: AudioChannelLayoutTag = (203 << 16) | 14;
-pub const kAudioChannelLayoutTag_DiscreteInOrder: AudioChannelLayoutTag = (147 << 16) | 0;
+pub const kAudioChannelLayoutTag_DiscreteInOrder: AudioChannelLayoutTag = 147 << 16;
 pub const kAudioChannelLayoutTag_CICP_1: AudioChannelLayoutTag = kAudioChannelLayoutTag_MPEG_1_0;
 pub const kAudioChannelLayoutTag_CICP_2: AudioChannelLayoutTag = kAudioChannelLayoutTag_MPEG_2_0;
 pub const kAudioChannelLayoutTag_CICP_3: AudioChannelLayoutTag = kAudioChannelLayoutTag_MPEG_3_0_A;
@@ -762,7 +754,7 @@ pub struct AudioChannelLayout {
 
 #[inline]
 pub fn AudioChannelLayoutTag_GetNumberOfChannels(inLayoutTag: AudioChannelLayoutTag) -> u32 {
-    (inLayoutTag & 0x0000FFFF) as u32
+    inLayoutTag & 0x0000FFFF
 }
 
 #[repr(C)]

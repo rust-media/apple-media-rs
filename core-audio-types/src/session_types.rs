@@ -16,7 +16,7 @@ pub type AVAudioSessionErrorCode = AVAudioInteger;
 
 #[inline]
 const fn fourcc(code: &[u8; 4]) -> AVAudioInteger {
-    (((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | ((code[3] as u32) << 0)) as AVAudioInteger
+    (((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | (code[3] as u32)) as AVAudioInteger
 }
 
 pub const AVAudioSessionErrorCodeNone: AVAudioSessionErrorCode = 0;
