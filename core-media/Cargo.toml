@@ -9,7 +9,7 @@ authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia", "os::macos-apis"]
 keywords = ["coremedia"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 block = "0.1"

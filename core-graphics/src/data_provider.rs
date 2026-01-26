@@ -3,6 +3,7 @@ use std::{ffi::CString, ptr::null_mut, sync::Arc};
 use core_foundation::{
     base::{CFTypeID, TCFType},
     data::{CFData, CFDataRef},
+    impl_CFTypeDescription, impl_TCFType,
     url::{CFURLRef, CFURL},
 };
 use libc::{c_char, c_void, off_t, size_t};

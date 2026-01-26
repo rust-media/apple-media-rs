@@ -1,4 +1,4 @@
-use crate::libc::c_double;
+use libc::c_double;
 
 pub type CVOptionFlags = u64;
 

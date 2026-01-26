@@ -8,7 +8,7 @@ use dispatch2::Queue;
 use libc::size_t;
 use objc2::{
     encode::{Encode, Encoding},
-    extern_class, msg_send, msg_send_id,
+    extern_class, extern_protocol, msg_send, msg_send_id,
     mutability::InteriorMutable,
     rc::{Allocated, Id},
     runtime::ProtocolObject,

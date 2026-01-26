@@ -3,6 +3,7 @@ use std::mem;
 use core_foundation::{
     base::{Boolean, CFGetTypeID, CFType, CFTypeID, CFTypeRef, TCFType, TCFTypeRef},
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription,
     string::{CFString, CFStringRef},
 };
 use core_graphics::{

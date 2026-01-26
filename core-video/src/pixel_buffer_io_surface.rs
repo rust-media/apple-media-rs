@@ -5,10 +5,9 @@ use core_foundation::{
     dictionary::{CFDictionary, CFDictionaryRef},
     string::{CFString, CFStringRef},
 };
-use io_surface::IOSurface;
+use io_surface::{IOSurface, IOSurfaceRef};
 
 use crate::{
-    io_surface::IOSurfaceRef,
     pixel_buffer::{CVPixelBuffer, CVPixelBufferRef},
     r#return::{kCVReturnSuccess, CVReturn},
 };

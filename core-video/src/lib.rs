@@ -1,15 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types, non_upper_case_globals, improper_ctypes)]
 
-extern crate block;
-#[macro_use]
-extern crate core_foundation;
 extern crate core_graphics2 as core_graphics;
-extern crate io_surface;
-extern crate libc;
-#[cfg(feature = "metal")]
-extern crate metal;
-#[cfg(feature = "objc")]
-extern crate objc2;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 #[cfg_attr(feature = "link", link(name = "CoreVideo", kind = "framework"))]

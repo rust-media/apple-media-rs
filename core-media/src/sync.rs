@@ -3,6 +3,7 @@ use std::{mem, ptr::null_mut};
 use core_foundation::{
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFRetain, CFType, CFTypeID, CFTypeRef, OSStatus, TCFType},
     date::{CFAbsoluteTime, CFTimeInterval},
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
     runloop::{CFRunLoop, CFRunLoopRef, CFRunLoopTimer, CFRunLoopTimerRef},
     string::CFStringRef,
 };

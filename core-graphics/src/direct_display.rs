@@ -1,3 +1,4 @@
+use bitflags::bitflags;
 use core_foundation::{array::CFArrayRef, base::CFTypeID, dictionary::CFDictionaryRef, string::CFStringRef};
 use libc::{c_double, c_float, c_void, size_t};
 

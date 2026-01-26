@@ -1,3 +1,4 @@
+use bitflags::bitflags;
 use core_foundation::{
     array::{CFArray, CFArrayRef},
     base::{CFType, TCFType},

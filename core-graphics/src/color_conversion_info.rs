@@ -2,7 +2,9 @@ use std::ptr::{null, null_mut};
 
 use core_foundation::{
     base::{CFType, CFTypeID, TCFType},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
 };
 use libc::c_void;

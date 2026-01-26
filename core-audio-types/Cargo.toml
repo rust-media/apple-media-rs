@@ -9,7 +9,7 @@ authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 categories = ["multimedia::audio", "os::macos-apis"]
 keywords = ["coreaudio"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 cfg-if = "1.0"

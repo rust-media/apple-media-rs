@@ -1,5 +1,6 @@
 use std::ptr::null_mut;
 
+use cfg_if::cfg_if;
 use core_foundation::{
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, OSStatus, TCFType},
     string::{CFString, CFStringEncoding, CFStringRef},

@@ -1,8 +1,10 @@
 use std::ptr::{null, null_mut};
 
+use bitflags::bitflags;
 use core_foundation::{
     array::{CFArray, CFArrayRef},
     base::{CFTypeID, TCFType},
+    impl_CFTypeDescription, impl_TCFType,
 };
 use libc::{c_void, size_t};
 

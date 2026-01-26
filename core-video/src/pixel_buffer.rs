@@ -4,6 +4,7 @@ use core_foundation::{
     array::CFArrayRef,
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
 };
 use libc::{c_void, size_t};

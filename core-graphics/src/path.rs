@@ -5,7 +5,10 @@ use std::{
     slice,
 };
 
-use core_foundation::base::{CFTypeID, TCFType};
+use core_foundation::{
+    base::{CFTypeID, TCFType},
+    impl_CFTypeDescription, impl_TCFType,
+};
 use libc::{c_void, size_t};
 #[cfg(feature = "objc")]
 use objc2::encode::{Encoding, RefEncode};

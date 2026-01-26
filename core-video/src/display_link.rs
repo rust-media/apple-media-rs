@@ -1,7 +1,10 @@
 use std::ptr::{null, null_mut};
 
 use block::{Block, ConcreteBlock};
-use core_foundation::base::{Boolean, CFIndex, CFTypeID, TCFType};
+use core_foundation::{
+    base::{Boolean, CFIndex, CFTypeID, TCFType},
+    impl_CFTypeDescription, impl_TCFType,
+};
 use core_graphics::display::CGDirectDisplayID;
 use libc::c_void;
 

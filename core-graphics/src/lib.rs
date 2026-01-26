@@ -1,21 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types, non_upper_case_globals, improper_ctypes)]
 
-#[macro_use]
-extern crate bitflags;
-extern crate block;
-#[macro_use]
-extern crate cfg_if;
-#[macro_use]
-extern crate core_foundation;
-#[cfg(all(target_os = "macos", feature = "dispatch2"))]
-extern crate dispatch2;
-#[cfg(all(target_os = "macos", feature = "io-surface"))]
-extern crate io_surface;
-extern crate libc;
-#[cfg(all(target_os = "macos", feature = "metal"))]
-extern crate metal;
-#[cfg(feature = "objc")]
-extern crate objc2;
+use cfg_if::cfg_if;
 
 #[cfg_attr(feature = "link", link(name = "CoreGraphics", kind = "framework"))]
 extern "C" {}
@@ -28,6 +13,7 @@ pub mod color_conversion_info;
 pub mod color_space;
 pub mod context;
 pub mod data_provider;
+
 cfg_if!(
     if #[cfg(all(target_os = "macos", feature = "display"))] {
         pub mod direct_display;

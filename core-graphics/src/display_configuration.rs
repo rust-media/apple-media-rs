@@ -1,5 +1,6 @@
 use std::ptr::null_mut;
 
+use bitflags::bitflags;
 use core_foundation::dictionary::CFDictionaryRef;
 use libc::{c_double, c_void};
 

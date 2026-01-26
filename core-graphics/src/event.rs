@@ -3,6 +3,7 @@ use std::mem::ManuallyDrop;
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFTypeID, TCFType},
     data::{CFData, CFDataRef},
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
     mach_port::{CFMachPort, CFMachPortRef},
 };
 use libc::{c_double, c_ulong, c_void, pid_t};

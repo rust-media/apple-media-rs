@@ -1,6 +1,8 @@
 use core_media::sample_buffer::CMSampleBufferRef;
 use dispatch2::Queue;
-use objc2::{extern_class, msg_send, msg_send_id, mutability::InteriorMutable, rc::Id, runtime::ProtocolObject, ClassType, ProtocolType};
+use objc2::{
+    extern_class, extern_protocol, msg_send, msg_send_id, mutability::InteriorMutable, rc::Id, runtime::ProtocolObject, ClassType, ProtocolType,
+};
 use objc2_foundation::{NSArray, NSDictionary, NSNumber, NSObject, NSObjectProtocol, NSString};
 
 use crate::{capture_output_base::AVCaptureOutput, capture_session::AVCaptureConnection};
