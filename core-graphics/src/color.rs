@@ -1,4 +1,4 @@
-use std::ptr::null;
+use std::{ptr::null, slice::from_raw_parts};
 
 use core_foundation::{
     base::{CFType, CFTypeID, TCFType},
@@ -176,7 +176,11 @@ impl CGColor {
         unsafe {
             let ptr = CGColorGetComponents(self.as_concrete_TypeRef());
             let count = self.number_of_components();
-            std::slice::from_raw_parts(ptr, count)
+            if ptr.is_null() || count == 0 {
+                &[]
+            } else {
+                from_raw_parts(ptr, count)
+            }
         }
     }
 
