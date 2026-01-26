@@ -28,10 +28,10 @@ core-video = { version = "0.4", path = "../core-video" }
 [features]
 default = ["display", "display-stream", "event", "link", "window"]
 display = []
-display-stream = ["dispatch2", "display", "io-surface", "objc"]
+display-stream = ["dep:dispatch2", "dep:io-surface", "display", "objc"]
 event = []
 link = ["core-foundation/link"]
-objc = ["objc2"]
+objc = ["dep:objc2"]
 window = []
 
 [[example]]

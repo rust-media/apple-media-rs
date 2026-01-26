@@ -24,7 +24,7 @@ objc2 = { version = "0.5", optional = true }
 [features]
 default = ["link"]
 link = ["core-foundation/link", "core-graphics2/link", "core-video/link"]
-objc = ["objc2"]
+objc = ["dep:objc2"]
 
 [package.metadata.docs.rs]
 no-default-features = true
