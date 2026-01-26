@@ -1,4 +1,4 @@
-version = "Two"
+style_edition = "2021"
 
 binop_separator = "Back"
 enum_discrim_align_threshold = 30
