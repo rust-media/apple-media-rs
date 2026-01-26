@@ -1,15 +1,15 @@
 [package]
 name = "core-graphics2"
 description = "Safe bindings to CoreGraphics framework, including display stream"
-homepage = "https://github.com/rust-media/apple-media-rs"
-repository = "https://github.com/rust-media/apple-media-rs"
+homepage.workspace = true
+repository.workspace = true
 documentation = "https://docs.rs/core-graphics2"
-version = "0.4.1"
-authors = ["Zhou Wei <zhouwei@ehom.net>"]
-license = "MIT OR Apache-2.0"
+version = "0.5.0"
+authors.workspace = true
+license.workspace = true
 categories = ["graphics", "multimedia", "os::macos-apis"]
 keywords = ["coregraphics", "display", "displaystream", "screencapture"]
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
 bitflags = "2.5"
@@ -23,7 +23,7 @@ metal = { version = "0.33", optional = true }
 objc2 = { version = "0.5", optional = true }
 
 [dev-dependencies]
-core-video = { version = "0.4", path = "../core-video" }
+core-video = { path = "../core-video" }
 
 [features]
 default = ["display", "display-stream", "event", "link", "window"]

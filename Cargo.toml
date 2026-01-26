@@ -1,2 +1,17 @@
 [workspace]
-members = ["core-audio-types", "core-graphics", "core-video", "core-media", "av-foundation", "screen-capture-kit"]
+resolver = "2"
+members = [
+    "av-foundation",
+    "core-audio-types",
+    "core-graphics",
+    "core-media",
+    "core-video",
+    "screen-capture-kit"
+]
+
+[workspace.package]
+homepage = "https://github.com/rust-media/apple-media-rs"
+repository = "https://github.com/rust-media/apple-media-rs"
+authors = ["Zhou Wei <zhouwei@ehom.net>"]
+license = "MIT OR Apache-2.0"
+edition = "2021"

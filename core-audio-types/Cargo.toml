@@ -1,15 +1,15 @@
 [package]
 name = "core-audio-types"
 description = "Bindings to CoreAudioTypes framework"
-homepage = "https://github.com/rust-media/apple-media-rs"
-repository = "https://github.com/rust-media/apple-media-rs"
+homepage.workspace = true
+repository.workspace = true
 documentation = "https://docs.rs/core-audio-types"
-version = "0.1.7"
-authors = ["Zhou Wei <zhouwei@ehom.net>"]
-license = "MIT OR Apache-2.0"
+version = "0.2.0"
+authors.workspace = true
+license.workspace = true
 categories = ["multimedia::audio", "os::macos-apis"]
 keywords = ["coreaudio"]
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
 cfg-if = "1.0"

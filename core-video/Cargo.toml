@@ -1,20 +1,20 @@
 [package]
 name = "core-video"
 description = "Safe bindings to CoreVideo framework"
-homepage = "https://github.com/rust-media/apple-media-rs"
-repository = "https://github.com/rust-media/apple-media-rs"
+homepage.workspace = true
+repository.workspace = true
 documentation = "https://docs.rs/core-video"
-version = "0.4.3"
-authors = ["Zhou Wei <zhouwei@ehom.net>"]
-license = "MIT OR Apache-2.0"
+version = "0.5.0"
+authors.workspace = true
+license.workspace = true
 categories = ["multimedia::video", "os::macos-apis"]
 keywords = ["corevideo"]
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
 block = "0.1"
 core-foundation = { version = "0.10", default-features = false }
-core-graphics2 = { version = "0.4", path = "../core-graphics", default-features = false, features = ["display"] }
+core-graphics2 = { version = "0.5", path = "../core-graphics", default-features = false, features = ["display"] }
 io-surface = { version = "0.16", default-features = false }
 libc = "0.2"
 metal = { version = "0.33", optional = true }
