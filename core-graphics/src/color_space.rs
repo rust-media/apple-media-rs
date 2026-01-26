@@ -3,6 +3,7 @@ use std::ptr::{null, null_mut};
 use core_foundation::{
     base::{CFType, CFTypeID, CFTypeRef, TCFType},
     data::{CFData, CFDataRef},
+    impl_CFTypeDescription, impl_TCFType,
     propertylist::{CFPropertyList, CFPropertyListRef},
     string::{CFString, CFStringRef},
 };

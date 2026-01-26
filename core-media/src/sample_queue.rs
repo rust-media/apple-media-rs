@@ -1,6 +1,9 @@
 use std::ptr::null_mut;
 
-use core_foundation::base::{kCFAllocatorDefault, CFAllocatorRef, CFTypeID, OSStatus, TCFType};
+use core_foundation::{
+    base::{kCFAllocatorDefault, CFAllocatorRef, CFTypeID, OSStatus, TCFType},
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
+};
 use libc::c_void;
 
 pub const kCMSimpleQueueError_AllocationFailed: OSStatus = -12770;

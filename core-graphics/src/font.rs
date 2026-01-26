@@ -5,6 +5,7 @@ use core_foundation::{
     base::{CFType, CFTypeID, TCFType},
     data::{CFData, CFDataRef},
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     number::CFNumber,
     string::{CFString, CFStringRef},
 };

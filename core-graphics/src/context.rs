@@ -3,6 +3,7 @@ use std::ptr::null;
 use core_foundation::{
     base::{CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     string::CFString,
 };
 use libc::{c_int, c_void, size_t};

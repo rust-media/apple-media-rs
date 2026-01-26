@@ -5,7 +5,9 @@ use core_audio_types::base_types::{AudioBufferList, AudioStreamPacketDescription
 use core_foundation::{
     array::{CFArray, CFArrayRef},
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFRange, CFType, CFTypeID, OSStatus, TCFType},
+    declare_TCFType,
     dictionary::CFDictionary,
+    impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
 };
 use core_video::image_buffer::{CVImageBuffer, CVImageBufferRef};

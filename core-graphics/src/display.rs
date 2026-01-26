@@ -1,6 +1,6 @@
 use std::ptr::null;
 
-use core_foundation::{array::CFArray, base::TCFType, string::CFString};
+use core_foundation::{array::CFArray, base::TCFType, impl_CFTypeDescription, impl_TCFType, string::CFString};
 use libc::c_double;
 
 #[cfg(feature = "window")]

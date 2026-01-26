@@ -1,6 +1,9 @@
 use std::ptr::{null, null_mut};
 
-use core_foundation::base::{CFTypeID, TCFType};
+use core_foundation::{
+    base::{CFTypeID, TCFType},
+    impl_CFTypeDescription, impl_TCFType,
+};
 use libc::c_void;
 
 use crate::{

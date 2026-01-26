@@ -1,6 +1,7 @@
 use core_foundation::{
     base::{CFTypeID, TCFType},
     date::CFTimeInterval,
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
 };
 use libc::c_double;
 

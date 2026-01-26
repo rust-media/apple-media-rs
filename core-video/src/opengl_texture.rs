@@ -1,4 +1,7 @@
-use core_foundation::base::{Boolean, CFTypeID, TCFType};
+use core_foundation::{
+    base::{Boolean, CFTypeID, TCFType},
+    impl_CFTypeDescription, impl_TCFType,
+};
 
 use crate::{
     buffer::TCVBuffer,

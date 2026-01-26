@@ -1,4 +1,4 @@
-use crate::libc::c_double;
+use libc::c_double;
 
 extern "C" {
     pub fn CVGetCurrentHostTime() -> u64;

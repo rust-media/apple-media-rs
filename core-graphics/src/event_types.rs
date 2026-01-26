@@ -1,3 +1,4 @@
+use bitflags::bitflags;
 use libc::{c_float, c_void, pid_t};
 
 #[repr(C)]

@@ -3,6 +3,7 @@ use std::ptr::{null, null_mut};
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
 };
 use libc::size_t;

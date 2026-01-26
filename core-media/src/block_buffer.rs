@@ -1,6 +1,9 @@
 use std::{ptr::null_mut, slice::from_raw_parts_mut};
 
-use core_foundation::base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFTypeID, OSStatus, TCFType};
+use core_foundation::{
+    base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFTypeID, OSStatus, TCFType},
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
+};
 use libc::{c_void, size_t};
 
 pub const kCMBlockBufferNoErr: OSStatus = 0;

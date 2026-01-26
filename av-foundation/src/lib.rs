@@ -1,15 +1,6 @@
 #![allow(non_snake_case, non_camel_case_types, non_upper_case_globals, improper_ctypes)]
 
-extern crate block2;
-extern crate core_foundation;
 extern crate core_graphics2 as core_graphics;
-extern crate core_media;
-extern crate core_video;
-extern crate dispatch2;
-extern crate libc;
-#[macro_use]
-extern crate objc2;
-extern crate objc2_foundation;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 #[link(name = "AVFoundation", kind = "framework")]

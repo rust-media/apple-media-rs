@@ -1,7 +1,9 @@
 use block::{Block, ConcreteBlock, RcBlock};
 use core_foundation::{
     base::{CFType, CFTypeID, TCFType},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     runloop::{CFRunLoopSource, CFRunLoopSourceRef},
     string::{CFString, CFStringRef},
 };

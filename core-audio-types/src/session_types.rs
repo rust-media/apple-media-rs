@@ -1,10 +1,12 @@
+use cfg_if::cfg_if;
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
-        use crate::libc::{c_long, c_ulong};
+        use libc::{c_long, c_ulong};
         pub type AVAudioInteger = c_long;
         pub type AVAudioUInteger = c_ulong;
     } else {
-        use crate::libc::{c_int, c_uint};
+        use libc::{c_int, c_uint};
         pub type AVAudioInteger = c_int;
         pub type AVAudioUInteger = c_uint;
     }

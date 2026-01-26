@@ -1,7 +1,7 @@
 use block2::RcBlock;
 use core_graphics::{display::CGDirectDisplayID, window::CGWindowID};
 use libc::pid_t;
-use objc2::{extern_class, msg_send, msg_send_id, mutability::InteriorMutable, rc::Id, ClassType};
+use objc2::{class, extern_class, msg_send, msg_send_id, mutability::InteriorMutable, rc::Id, ClassType};
 use objc2_foundation::{CGRect, NSArray, NSError, NSInteger, NSObject, NSObjectProtocol, NSString};
 
 extern_class!(

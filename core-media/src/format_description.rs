@@ -8,7 +8,9 @@ use core_audio_types::base_types::{AudioChannelLayout, AudioFormatListItem, Audi
 use core_foundation::{
     array::{CFArray, CFArrayRef},
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFType, CFTypeID, CFTypeRef, OSStatus, TCFType, TCFTypeRef},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     propertylist::{CFPropertyList, CFPropertyListRef},
     string::{CFString, CFStringRef},
 };

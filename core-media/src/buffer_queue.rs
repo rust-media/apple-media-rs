@@ -6,6 +6,7 @@ use std::{
 use block::{Block, ConcreteBlock};
 use core_foundation::{
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFComparisonResult, CFGetTypeID, CFRetain, CFType, CFTypeID, CFTypeRef, OSStatus, TCFType},
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
     string::CFStringRef,
 };
 use libc::{c_void, size_t};

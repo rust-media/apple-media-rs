@@ -1,7 +1,10 @@
 use std::ptr::{null, null_mut};
 
+use bitflags::bitflags;
+use cfg_if::cfg_if;
 use core_foundation::{
     base::{CFTypeID, TCFType},
+    impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
 };
 use libc::{c_void, size_t};

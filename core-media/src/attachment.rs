@@ -2,7 +2,9 @@ use std::mem;
 
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFGetTypeID, CFRetain, CFType, CFTypeID, CFTypeRef, TCFType, TCFTypeRef},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription,
     string::{CFString, CFStringRef},
 };
 
