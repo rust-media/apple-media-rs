@@ -327,7 +327,7 @@ extern "C" {
         refcon: *mut c_void,
     ) -> OSStatus;
     pub fn CMSampleBufferCallBlockForEachSample(sbuf: CMSampleBufferRef, block: *const Block<(CMSampleBufferRef, CMItemCount), OSStatus>)
-    -> OSStatus;
+        -> OSStatus;
 }
 
 #[cfg(feature = "objc")]
