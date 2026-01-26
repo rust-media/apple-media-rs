@@ -1,3 +1,5 @@
+use std::slice::from_raw_parts;
+
 use block::{Block, ConcreteBlock, RcBlock};
 use core_foundation::{
     base::{CFType, CFTypeID, TCFType},
@@ -122,7 +124,11 @@ impl CGDisplayStreamUpdate {
         unsafe {
             let mut rect_count = 0;
             let rects = CGDisplayStreamUpdateGetRects(self.as_concrete_TypeRef(), rect_type, &mut rect_count);
-            std::slice::from_raw_parts(rects, rect_count)
+            if rects.is_null() || rect_count == 0 {
+                &[]
+            } else {
+                from_raw_parts(rects, rect_count)
+            }
         }
     }
 
