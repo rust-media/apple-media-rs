@@ -35,6 +35,11 @@ Rust bindings to Apple media frameworks
 [![Version](https://img.shields.io/crates/v/screen-capture-kit)](https://crates.io/crates/screen-capture-kit)
 [![Documentation](https://docs.rs/screen-capture-kit/badge.svg)](https://docs.rs/screen-capture-kit)
 
+## video-toolbox
+
+[![Version](https://img.shields.io/crates/v/video-toolbox)](https://crates.io/crates/video-toolbox)
+[![Documentation](https://docs.rs/video-toolbox/badge.svg)](https://docs.rs/video-toolbox)
+
 ## Crates
 
 - [x] core-audio-types
@@ -45,3 +50,4 @@ Rust bindings to Apple media frameworks
 - [ ] core-text2
 - [x] av-foundation
 - [x] screen-capture-kit
+- [x] video-toolbox
