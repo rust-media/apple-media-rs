@@ -2,6 +2,7 @@ use std::ptr::{null, null_mut};
 
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
     impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
@@ -66,18 +67,12 @@ impl From<CVOpenGLBufferKeys> for CFString {
     }
 }
 
-impl TCVBuffer for CVOpenGLBuffer {}
-impl TCVImageBuffer for CVOpenGLBuffer {}
-pub struct CVOpenGLBuffer(CVOpenGLBufferRef);
-
-impl Drop for CVOpenGLBuffer {
-    fn drop(&mut self) {
-        unsafe { CVOpenGLBufferRelease(self.0) }
-    }
-}
-
+declare_TCFType!(CVOpenGLBuffer, CVOpenGLBufferRef);
 impl_TCFType!(CVOpenGLBuffer, CVOpenGLBufferRef, CVOpenGLBufferGetTypeID);
 impl_CFTypeDescription!(CVOpenGLBuffer);
+
+impl TCVBuffer for CVOpenGLBuffer {}
+impl TCVImageBuffer for CVOpenGLBuffer {}
 
 impl CVOpenGLBuffer {
     #[inline]

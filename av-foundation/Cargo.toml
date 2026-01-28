@@ -4,7 +4,7 @@ description = "Bindings to AVFoundation framework"
 homepage.workspace = true
 repository.workspace = true
 documentation = "https://docs.rs/av-foundation"
-version = "0.6.0"
+version = "0.6.1"
 authors.workspace = true
 license.workspace = true
 categories = ["multimedia::video", "os::macos-apis"]
@@ -13,13 +13,13 @@ edition.workspace = true
 
 [dependencies]
 block2 = "0.5"
-core-foundation = { version = "0.10", default-features = false }
-core-media = { version = "0.6", path = "../core-media", default-features = false, features = ["objc"] }
-core-graphics2 = { version = "0.5", path = "../core-graphics", default-features = false, features = ["objc"] }
-core-video = { version = "0.5", path = "../core-video", default-features = false, features = ["objc"] }
+core-foundation.workspace = true
+core-graphics2 = { workspace = true, features = ["objc"] }
+core-media = { workspace = true, features = ["objc"] }
+core-video = { workspace = true, features = ["objc"] }
 dispatch2 = "0.1"
-libc = "0.2"
-objc2 = "0.5"
+libc.workspace = true
+objc2.workspace = true
 objc2-foundation = { version = "0.2", features = ["NSArray", "NSDictionary", "NSEnumerator", "NSError", "NSRange", "NSString", "NSValue"] }
 
 [dev-dependencies]

@@ -2,7 +2,9 @@ use std::ptr::{null, null_mut};
 
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
 };
 use libc::{c_void, size_t};
@@ -64,9 +66,7 @@ impl From<CVMetalTextureCacheKeys> for CFString {
     }
 }
 
-declare_TCFType! {
-    CVMetalTextureCache, CVMetalTextureCacheRef
-}
+declare_TCFType!(CVMetalTextureCache, CVMetalTextureCacheRef);
 impl_TCFType!(CVMetalTextureCache, CVMetalTextureCacheRef, CVMetalTextureCacheGetTypeID);
 impl_CFTypeDescription!(CVMetalTextureCache);
 

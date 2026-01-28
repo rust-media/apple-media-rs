@@ -131,9 +131,7 @@ extern "C" {
     pub fn CMBlockBufferIsEmpty(theBuffer: CMBlockBufferRef) -> Boolean;
 }
 
-declare_TCFType! {
-    CMBlockBuffer, CMBlockBufferRef
-}
+declare_TCFType!(CMBlockBuffer, CMBlockBufferRef);
 impl_TCFType!(CMBlockBuffer, CMBlockBufferRef, CMBlockBufferGetTypeID);
 impl_CFTypeDescription!(CMBlockBuffer);
 

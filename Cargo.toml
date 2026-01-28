@@ -6,7 +6,7 @@ members = [
     "core-graphics",
     "core-media",
     "core-video",
-    "screen-capture-kit"
+    "screen-capture-kit",
 ]
 
 [workspace.package]
@@ -15,3 +15,14 @@ repository = "https://github.com/rust-media/apple-media-rs"
 authors = ["Zhou Wei <zhouwei@ehom.net>"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
+
+[workspace.dependencies]
+core-audio-types = { version = "0.2.0", default-features = false, path = "core-audio-types" }
+core-graphics2 = { version = "0.5.2", default-features = false, path = "core-graphics" }
+core-media = { version = "0.6.2", default-features = false, path = "core-media" }
+core-video = { version = "0.5.2", default-features = false, path = "core-video" }
+bitflags = "2.5"
+cfg-if = "1.0"
+core-foundation = { version = "0.10", default-features = false }
+libc = "0.2"
+objc2 = "0.5"

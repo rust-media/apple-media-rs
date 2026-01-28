@@ -1,5 +1,6 @@
 use core_foundation::{
     base::{Boolean, CFTypeID, TCFType},
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
 };
 use metal::{foreign_types::ForeignType, MTLTexture, Texture};
@@ -49,14 +50,12 @@ impl From<CVMetalTextureKeys> for CFString {
     }
 }
 
-impl TCVBuffer for CVMetalTexture {}
-impl TCVImageBuffer for CVMetalTexture {}
-
-declare_TCFType! {
-    CVMetalTexture, CVMetalTextureRef
-}
+declare_TCFType!(CVMetalTexture, CVMetalTextureRef);
 impl_TCFType!(CVMetalTexture, CVMetalTextureRef, CVMetalTextureGetTypeID);
 impl_CFTypeDescription!(CVMetalTexture);
+
+impl TCVBuffer for CVMetalTexture {}
+impl TCVImageBuffer for CVMetalTexture {}
 
 impl CVMetalTexture {
     #[inline]

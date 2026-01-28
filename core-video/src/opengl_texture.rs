@@ -1,6 +1,6 @@
 use core_foundation::{
     base::{Boolean, CFTypeID, TCFType},
-    impl_CFTypeDescription, impl_TCFType,
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
 };
 
 use crate::{
@@ -27,19 +27,12 @@ extern "C" {
     );
 }
 
-impl TCVBuffer for CVOpenGLTexture {}
-impl TCVImageBuffer for CVOpenGLTexture {}
-
-pub struct CVOpenGLTexture(CVOpenGLTextureRef);
-
-impl Drop for CVOpenGLTexture {
-    fn drop(&mut self) {
-        unsafe { CVOpenGLTextureRelease(self.0) }
-    }
-}
-
+declare_TCFType!(CVOpenGLTexture, CVOpenGLTextureRef);
 impl_TCFType!(CVOpenGLTexture, CVOpenGLTextureRef, CVOpenGLTextureGetTypeID);
 impl_CFTypeDescription!(CVOpenGLTexture);
+
+impl TCVBuffer for CVOpenGLTexture {}
+impl TCVImageBuffer for CVOpenGLTexture {}
 
 impl CVOpenGLTexture {
     #[inline]

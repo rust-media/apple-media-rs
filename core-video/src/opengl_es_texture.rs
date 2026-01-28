@@ -1,4 +1,7 @@
-use core_foundation::base::{Boolean, CFTypeID, TCFType};
+use core_foundation::{
+    base::{Boolean, CFTypeID, TCFType},
+    declare_TCFType, impl_CFTypeDescription, impl_TCFType,
+};
 
 use crate::{
     buffer::TCVBuffer,
@@ -22,14 +25,12 @@ extern "C" {
     );
 }
 
-impl TCVBuffer for CVOpenGLESTexture {}
-impl TCVImageBuffer for CVOpenGLESTexture {}
-
-declare_TCFType! {
-    CVOpenGLESTexture, CVOpenGLESTextureRef
-}
+declare_TCFType!(CVOpenGLESTexture, CVOpenGLESTextureRef);
 impl_TCFType!(CVOpenGLESTexture, CVOpenGLESTextureRef, CVOpenGLESTextureGetTypeID);
 impl_CFTypeDescription!(CVOpenGLESTexture);
+
+impl TCVBuffer for CVOpenGLESTexture {}
+impl TCVImageBuffer for CVOpenGLESTexture {}
 
 impl CVOpenGLESTexture {
     #[inline]

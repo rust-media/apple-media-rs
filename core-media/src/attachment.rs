@@ -46,9 +46,7 @@ pub trait CMAttachmentBearerSubClass: TCFType {
     }
 }
 
-declare_TCFType! {
-    CMAttachmentBearer, CMAttachmentBearerRef
-}
+declare_TCFType!(CMAttachmentBearer, CMAttachmentBearerRef);
 impl_CFTypeDescription!(CMAttachmentBearer);
 
 impl CMAttachmentBearer {

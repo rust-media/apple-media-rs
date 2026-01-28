@@ -3,6 +3,7 @@ use std::ptr::{null, null_mut};
 use core_foundation::{
     array::CFArrayRef,
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFType, CFTypeID, TCFType},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
     impl_CFTypeDescription, impl_TCFType,
     string::{CFString, CFStringRef},
@@ -394,19 +395,12 @@ impl From<CVPixelBufferKeys> for CFString {
     }
 }
 
-impl TCVBuffer for CVPixelBuffer {}
-impl TCVImageBuffer for CVPixelBuffer {}
-
-pub struct CVPixelBuffer(CVPixelBufferRef);
-
-impl Drop for CVPixelBuffer {
-    fn drop(&mut self) {
-        unsafe { CVPixelBufferRelease(self.0) }
-    }
-}
-
+declare_TCFType!(CVPixelBuffer, CVPixelBufferRef);
 impl_TCFType!(CVPixelBuffer, CVPixelBufferRef, CVPixelBufferGetTypeID);
 impl_CFTypeDescription!(CVPixelBuffer);
+
+impl TCVBuffer for CVPixelBuffer {}
+impl TCVImageBuffer for CVPixelBuffer {}
 
 impl CVPixelBuffer {
     #[inline]

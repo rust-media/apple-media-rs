@@ -2,7 +2,9 @@ use std::ptr::{null, null_mut};
 
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, CFTypeID, TCFType},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
+    impl_CFTypeDescription, impl_TCFType,
     string::CFString,
 };
 use libc::{c_void, size_t};
@@ -53,9 +55,7 @@ extern "C" {
     pub fn CVOpenGLESTextureCacheGetTypeID() -> CFTypeID;
 }
 
-declare_TCFType! {
-    CVOpenGLESTextureCache, CVOpenGLESTextureCacheRef
-}
+declare_TCFType!(CVOpenGLESTextureCache, CVOpenGLESTextureCacheRef);
 impl_TCFType!(CVOpenGLESTextureCache, CVOpenGLESTextureCacheRef, CVOpenGLESTextureCacheGetTypeID);
 impl_CFTypeDescription!(CVOpenGLESTextureCache);
 

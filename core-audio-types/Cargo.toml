@@ -12,13 +12,13 @@ keywords = ["coreaudio"]
 edition.workspace = true
 
 [dependencies]
-cfg-if = "1.0"
-core-foundation-sys = { version = "0.8", default-features = false }
-libc = "0.2"
+cfg-if.workspace = true
+core-foundation.workspace = true
+libc.workspace = true
 
 [features]
 default = ["link"]
-link = ["core-foundation-sys/link"]
+link = ["core-foundation/link"]
 prefer-fixed-point = []
 
 [package.metadata.docs.rs]

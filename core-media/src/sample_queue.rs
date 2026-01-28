@@ -27,9 +27,7 @@ extern "C" {
     pub fn CMSimpleQueueGetCount(queue: CMSimpleQueueRef) -> i32;
 }
 
-declare_TCFType! {
-    CMSimpleQueue, CMSimpleQueueRef
-}
+declare_TCFType!(CMSimpleQueue, CMSimpleQueueRef);
 impl_TCFType!(CMSimpleQueue, CMSimpleQueueRef, CMSimpleQueueGetTypeID);
 impl_CFTypeDescription!(CMSimpleQueue);
 

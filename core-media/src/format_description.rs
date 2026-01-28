@@ -639,9 +639,7 @@ impl CMFormatDescription {
     }
 }
 
-declare_TCFType! {
-    CMFormatDescription, CMFormatDescriptionRef
-}
+declare_TCFType!(CMFormatDescription, CMFormatDescriptionRef);
 impl_TCFType!(CMFormatDescription, CMFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMFormatDescription);
 
@@ -724,9 +722,7 @@ impl CMFormatDescription {
 
 impl TCMFormatDescription for CMAudioFormatDescription {}
 
-declare_TCFType! {
-    CMAudioFormatDescription, CMAudioFormatDescriptionRef
-}
+declare_TCFType!(CMAudioFormatDescription, CMAudioFormatDescriptionRef);
 impl_TCFType!(CMAudioFormatDescription, CMAudioFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMAudioFormatDescription);
 
@@ -861,9 +857,7 @@ impl CMAudioFormatDescription {
 
 impl TCMFormatDescription for CMVideoFormatDescription {}
 
-declare_TCFType! {
-    CMVideoFormatDescription, CMVideoFormatDescriptionRef
-}
+declare_TCFType!(CMVideoFormatDescription, CMVideoFormatDescriptionRef);
 impl_TCFType!(CMVideoFormatDescription, CMVideoFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMVideoFormatDescription);
 
@@ -1024,9 +1018,7 @@ impl CMVideoFormatDescription {
 
 impl TCMFormatDescription for CMMuxedFormatDescription {}
 
-declare_TCFType! {
-    CMMuxedFormatDescription, CMMuxedFormatDescriptionRef
-}
+declare_TCFType!(CMMuxedFormatDescription, CMMuxedFormatDescriptionRef);
 impl_TCFType!(CMMuxedFormatDescription, CMMuxedFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMMuxedFormatDescription);
 
@@ -1051,9 +1043,7 @@ impl CMMuxedFormatDescription {
 
 impl TCMFormatDescription for CMClosedCaptionFormatDescription {}
 
-declare_TCFType! {
-    CMClosedCaptionFormatDescription, CMClosedCaptionFormatDescriptionRef
-}
+declare_TCFType!(CMClosedCaptionFormatDescription, CMClosedCaptionFormatDescriptionRef);
 impl_TCFType!(CMClosedCaptionFormatDescription, CMClosedCaptionFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMClosedCaptionFormatDescription);
 
@@ -1085,9 +1075,7 @@ impl CMClosedCaptionFormatDescription {
 
 impl TCMFormatDescription for CMTextFormatDescription {}
 
-declare_TCFType! {
-    CMTextFormatDescription, CMTextFormatDescriptionRef
-}
+declare_TCFType!(CMTextFormatDescription, CMTextFormatDescriptionRef);
 impl_TCFType!(CMTextFormatDescription, CMTextFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMTextFormatDescription);
 
@@ -1199,9 +1187,7 @@ impl CMTextFormatDescription {
 
 impl TCMFormatDescription for CMTimeCodeFormatDescription {}
 
-declare_TCFType! {
-    CMTimeCodeFormatDescription, CMTimeCodeFormatDescriptionRef
-}
+declare_TCFType!(CMTimeCodeFormatDescription, CMTimeCodeFormatDescriptionRef);
 impl_TCFType!(CMTimeCodeFormatDescription, CMTimeCodeFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMTimeCodeFormatDescription);
 
@@ -1256,9 +1242,7 @@ impl CMTimeCodeFormatDescription {
 
 impl TCMFormatDescription for CMMetadataFormatDescription {}
 
-declare_TCFType! {
-    CMMetadataFormatDescription, CMMetadataFormatDescriptionRef
-}
+declare_TCFType!(CMMetadataFormatDescription, CMMetadataFormatDescriptionRef);
 impl_TCFType!(CMMetadataFormatDescription, CMMetadataFormatDescriptionRef, CMFormatDescriptionGetTypeID);
 impl_CFTypeDescription!(CMMetadataFormatDescription);
 
