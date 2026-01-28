@@ -161,9 +161,7 @@ extern "C" {
     pub fn CMBufferQueueSetValidationHandler(queue: CMBufferQueueRef, handler: CMBufferValidationHandler) -> OSStatus;
 }
 
-declare_TCFType! {
-    CMBuffer, CMBufferRef
-}
+declare_TCFType!(CMBuffer, CMBufferRef);
 impl_CFTypeDescription!(CMBuffer);
 
 impl CMBuffer {
@@ -214,9 +212,7 @@ impl CMBuffer {
     }
 }
 
-declare_TCFType! {
-    CMBufferQueue, CMBufferQueueRef
-}
+declare_TCFType!(CMBufferQueue, CMBufferQueueRef);
 impl_TCFType!(CMBufferQueue, CMBufferQueueRef, CMBufferQueueGetTypeID);
 impl_CFTypeDescription!(CMBufferQueue);
 

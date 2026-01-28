@@ -1,5 +1,5 @@
 use cfg_if::cfg_if;
-use core_foundation_sys::base::OSStatus;
+use core_foundation::base::OSStatus;
 use libc::{c_long, c_void};
 
 use crate::OSType;

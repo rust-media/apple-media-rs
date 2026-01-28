@@ -102,9 +102,7 @@ extern "C" {
     pub fn CGDisplayStreamGetRunLoopSource(stream: CGDisplayStreamRef) -> CFRunLoopSourceRef;
 }
 
-declare_TCFType! {
-    CGDisplayStreamUpdate, CGDisplayStreamUpdateRef
-}
+declare_TCFType!(CGDisplayStreamUpdate, CGDisplayStreamUpdateRef);
 impl_TCFType!(CGDisplayStreamUpdate, CGDisplayStreamUpdateRef, CGDisplayStreamUpdateGetTypeID);
 impl_CFTypeDescription!(CGDisplayStreamUpdate);
 
@@ -146,9 +144,7 @@ impl CGDisplayStreamUpdate {
     }
 }
 
-declare_TCFType! {
-    CGDisplayStream, CGDisplayStreamRef
-}
+declare_TCFType!(CGDisplayStream, CGDisplayStreamRef);
 impl_TCFType!(CGDisplayStream, CGDisplayStreamRef, CGDisplayStreamGetTypeID);
 impl_CFTypeDescription!(CGDisplayStream);
 

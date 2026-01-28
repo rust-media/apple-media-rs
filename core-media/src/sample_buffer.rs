@@ -337,9 +337,7 @@ unsafe impl RefEncode for opaqueCMSampleBuffer {
     const ENCODING_REF: Encoding = Encoding::Pointer(&Encoding::Struct("opaqueCMSampleBuffer", &[]));
 }
 
-declare_TCFType! {
-    CMSampleBuffer, CMSampleBufferRef
-}
+declare_TCFType!(CMSampleBuffer, CMSampleBufferRef);
 impl_TCFType!(CMSampleBuffer, CMSampleBufferRef, CMSampleBufferGetTypeID);
 impl_CFTypeDescription!(CMSampleBuffer);
 

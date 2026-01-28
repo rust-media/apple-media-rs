@@ -4,7 +4,7 @@ description = "Safe bindings to CoreGraphics framework, including display stream
 homepage.workspace = true
 repository.workspace = true
 documentation = "https://docs.rs/core-graphics2"
-version = "0.5.1"
+version = "0.5.2"
 authors.workspace = true
 license.workspace = true
 categories = ["graphics", "multimedia", "os::macos-apis"]
@@ -12,18 +12,18 @@ keywords = ["coregraphics", "display", "displaystream", "screencapture"]
 edition.workspace = true
 
 [dependencies]
-bitflags = "2.5"
+bitflags.workspace = true
 block = "0.1"
-cfg-if = "1.0"
-core-foundation = { version = "0.10", default-features = false }
+cfg-if.workspace = true
+core-foundation.workspace = true
 dispatch2 = { version = "0.1", optional = true }
 io-surface = { version = "0.16", optional = true }
-libc = "0.2"
+libc.workspace = true
 metal = { version = "0.33", optional = true }
-objc2 = { version = "0.5", optional = true }
+objc2 = { workspace = true, optional = true }
 
 [dev-dependencies]
-core-video = { path = "../core-video" }
+core-video.workspace = true
 
 [features]
 default = ["display", "display-stream", "event", "link", "window"]

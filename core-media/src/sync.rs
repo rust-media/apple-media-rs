@@ -95,9 +95,7 @@ extern "C" {
     pub static kCMTimebaseNotificationKey_EventTime: CFStringRef;
 }
 
-declare_TCFType! {
-    CMClock, CMClockRef
-}
+declare_TCFType!(CMClock, CMClockRef);
 impl_TCFType!(CMClock, CMClockRef, CMClockGetTypeID);
 impl_CFTypeDescription!(CMClock);
 
@@ -145,9 +143,7 @@ impl CMClock {
     }
 }
 
-declare_TCFType! {
-    CMTimebase, CMTimebaseRef
-}
+declare_TCFType!(CMTimebase, CMTimebaseRef);
 impl_TCFType!(CMTimebase, CMTimebaseRef, CMTimebaseGetTypeID);
 impl_CFTypeDescription!(CMTimebase);
 
@@ -369,9 +365,7 @@ impl CMTimebase {
     }
 }
 
-declare_TCFType! {
-    CMClockOrTimebase, CMClockOrTimebaseRef
-}
+declare_TCFType!(CMClockOrTimebase, CMClockOrTimebaseRef);
 impl_CFTypeDescription!(CMClockOrTimebase);
 
 impl CMClockOrTimebase {

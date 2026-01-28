@@ -2,6 +2,7 @@ use std::mem;
 
 use core_foundation::{
     base::{Boolean, CFGetTypeID, CFType, CFTypeID, CFTypeRef, TCFType, TCFTypeRef},
+    declare_TCFType,
     dictionary::{CFDictionary, CFDictionaryRef},
     impl_CFTypeDescription,
     string::{CFString, CFStringRef},
@@ -12,7 +13,7 @@ use core_graphics::{
 };
 use libc::c_void;
 
-use crate::buffer::{CVBuffer, CVBufferRef, CVBufferRelease, CVBufferRetain, TCVBuffer};
+use crate::buffer::{CVBuffer, CVBufferRef, CVBufferRetain, TCVBuffer};
 
 pub type CVImageBufferRef = CVBufferRef;
 
@@ -340,18 +341,18 @@ impl From<CVImageBufferChromaLocation> for CFString {
 }
 
 pub enum CVImageBufferChromaSubsampling {
-    _420,
-    _422,
-    _411,
+    CS420,
+    CS422,
+    CS411,
 }
 
 impl From<CVImageBufferChromaSubsampling> for CFStringRef {
     fn from(chroma_subsampling: CVImageBufferChromaSubsampling) -> CFStringRef {
         unsafe {
             match chroma_subsampling {
-                CVImageBufferChromaSubsampling::_420 => kCVImageBufferChromaSubsampling_420,
-                CVImageBufferChromaSubsampling::_422 => kCVImageBufferChromaSubsampling_422,
-                CVImageBufferChromaSubsampling::_411 => kCVImageBufferChromaSubsampling_411,
+                CVImageBufferChromaSubsampling::CS420 => kCVImageBufferChromaSubsampling_420,
+                CVImageBufferChromaSubsampling::CS422 => kCVImageBufferChromaSubsampling_422,
+                CVImageBufferChromaSubsampling::CS411 => kCVImageBufferChromaSubsampling_411,
             }
         }
     }
@@ -409,13 +410,8 @@ pub fn transfer_function_get_string_for_integer_code_point(transfer_function_cod
     unsafe { CFString::wrap_under_get_rule(CVTransferFunctionGetStringForIntegerCodePoint(transfer_function_code_point)) }
 }
 
-pub struct CVImageBuffer(CVImageBufferRef);
-
-impl Drop for CVImageBuffer {
-    fn drop(&mut self) {
-        unsafe { CVBufferRelease(self.0) }
-    }
-}
+declare_TCFType!(CVImageBuffer, CVImageBufferRef);
+impl_CFTypeDescription!(CVImageBuffer);
 
 impl CVImageBuffer {
     #[inline]
@@ -474,8 +470,6 @@ impl PartialEq for CVImageBuffer {
 }
 
 impl Eq for CVImageBuffer {}
-
-impl_CFTypeDescription!(CVImageBuffer);
 
 pub trait TCVImageBuffer: TCVBuffer {
     #[inline]
