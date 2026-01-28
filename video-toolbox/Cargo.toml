@@ -1,0 +1,25 @@
+[package]
+name = "video-toolbox"
+description = "Bindings to VideoToolbox framework"
+homepage.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/video-toolbox"
+version = "0.1.0"
+authors.workspace = true
+license.workspace = true
+categories = ["multimedia", "multimedia::video", "os::macos-apis"]
+keywords = ["videotoolbox", "decoder", "encoder"]
+edition.workspace = true
+
+[dependencies]
+bitflags.workspace = true
+block = "0.1"
+core-foundation.workspace = true
+core-graphics2.workspace = true
+core-media.workspace = true
+core-video.workspace = true
+libc = "0.2"
+
+[features]
+default = ["link"]
+link = ["core-foundation/link", "core-graphics2/link", "core-media/link", "core-video/link"]
