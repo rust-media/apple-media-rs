@@ -5,4 +5,4 @@
 [![License](https://img.shields.io/badge/License-Apache%202-blue.svg)](LICENSE-APACHE)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE-MIT)
 
-Rust bindings to VideoToolbox framework
+Rust safe bindings to VideoToolbox framework
