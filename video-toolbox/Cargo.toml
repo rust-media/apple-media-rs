@@ -1,10 +1,10 @@
 [package]
 name = "video-toolbox"
-description = "Bindings to VideoToolbox framework"
+description = "Safe bindings to VideoToolbox framework"
 homepage.workspace = true
 repository.workspace = true
 documentation = "https://docs.rs/video-toolbox"
-version = "0.1.1"
+version = "0.1.2"
 authors.workspace = true
 license.workspace = true
 categories = ["multimedia", "multimedia::video", "os::macos-apis"]
@@ -23,3 +23,13 @@ libc = "0.2"
 [features]
 default = ["link"]
 link = ["core-foundation/link", "core-graphics2/link", "core-media/link", "core-video/link"]
+
+[package.metadata.docs.rs]
+no-default-features = true
+default-target = "x86_64-apple-darwin"
+targets = [
+    "aarch64-apple-darwin",
+    "aarch64-apple-ios",
+    "x86_64-apple-darwin",
+    "x86_64-apple-ios",
+]
