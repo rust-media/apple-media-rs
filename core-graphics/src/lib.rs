@@ -1,4 +1,13 @@
-#![allow(non_snake_case, non_camel_case_types, non_upper_case_globals, improper_ctypes)]
+#![allow(
+    clippy::missing_safety_doc,
+    clippy::too_many_arguments,
+    clippy::result_unit_err,
+    clippy::type_complexity,
+    non_snake_case,
+    non_camel_case_types,
+    non_upper_case_globals,
+    improper_ctypes
+)]
 
 use cfg_if::cfg_if;
 

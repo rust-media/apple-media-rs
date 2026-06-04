@@ -127,7 +127,7 @@ impl AudioObject {
     pub fn get_property_array_with_qualifier<T: Copy>(self, address: &AudioObjectPropertyAddress, qualifier: &[u8]) -> Result<Vec<T>, OSStatus> {
         let element_size = mem::size_of::<T>();
         let data_size = self.property_data_size_with_qualifier(address, qualifier)? as usize;
-        if element_size == 0 || data_size % element_size != 0 {
+        if element_size == 0 || !data_size.is_multiple_of(element_size) {
             return Err(sys::kAudioHardwareBadPropertySizeError);
         }
 
@@ -145,7 +145,7 @@ impl AudioObject {
             )
         };
         status_to_result(status)?;
-        if io_data_size as usize % element_size != 0 {
+        if !(io_data_size as usize).is_multiple_of(element_size) {
             return Err(sys::kAudioHardwareBadPropertySizeError);
         }
         unsafe { values.set_len(io_data_size as usize / element_size) };

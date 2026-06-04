@@ -261,7 +261,7 @@ impl CMBlockBuffer {
     }
 
     #[inline]
-    pub fn access_data_bytes(&self, offset: size_t, temporary_block: &mut [u8]) -> Result<&mut [u8], OSStatus> {
+    pub fn access_data_bytes(&mut self, offset: size_t, temporary_block: &mut [u8]) -> Result<&mut [u8], OSStatus> {
         unsafe {
             let mut returned_pointer: *mut c_void = null_mut();
             let status = CMBlockBufferAccessDataBytes(
@@ -310,7 +310,7 @@ impl CMBlockBuffer {
     }
 
     #[inline]
-    pub fn get_data(&self, offset: size_t) -> Result<&mut [u8], OSStatus> {
+    pub fn get_data(&mut self, offset: size_t) -> Result<&mut [u8], OSStatus> {
         unsafe {
             let mut length_at_offset: size_t = 0;
             let mut total_length: size_t = 0;

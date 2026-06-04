@@ -340,10 +340,8 @@ impl CGEvent {
         }
     }
 
-    pub fn post_from_tap(&self, proxy: CGEventTapProxy) {
-        unsafe {
-            CGEventTapPostEvent(proxy, self.as_concrete_TypeRef());
-        }
+    pub unsafe fn post_from_tap(&self, proxy: CGEventTapProxy) {
+        CGEventTapPostEvent(proxy, self.as_concrete_TypeRef());
     }
 }
 

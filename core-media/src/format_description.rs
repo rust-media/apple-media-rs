@@ -35,7 +35,7 @@ pub type CMMediaType = FourCharCode;
 
 #[inline]
 const fn fourcc(code: &[u8; 4]) -> u32 {
-    ((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | ((code[3] as u32) << 0)
+    ((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | (code[3] as u32)
 }
 
 pub const kCMMediaType_Video: CMMediaType = fourcc(b"vide");

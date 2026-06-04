@@ -352,8 +352,8 @@ impl CGDisplay {
 }
 
 fn get_displays_from_ids(ids: &mut Vec<CGDirectDisplayID>, count: usize) -> Option<Vec<CGDisplay>> {
-    ids.truncate(count as usize);
-    Some(ids.into_iter().map(|id| CGDisplay::new(*id)).collect())
+    ids.truncate(count);
+    Some(ids.iter().map(|id| CGDisplay::new(*id)).collect())
 }
 
 pub fn get_displays_with_point(point: CGPoint, max_displays: usize) -> Option<Vec<CGDisplay>> {
