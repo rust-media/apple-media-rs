@@ -17,6 +17,7 @@ use core_video::{
 use libc::c_void;
 
 use crate::{
+    base::status_to_result,
     errors::VTEncodeInfoFlags,
     session::{TVTSession, VTSessionRef},
 };
@@ -144,11 +145,7 @@ impl VTCompressionSession {
             output_callback_ref_con.unwrap_or(null_mut()),
             &mut session,
         );
-        if status == 0 {
-            Ok(unsafe { VTCompressionSession::wrap_under_create_rule(session) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { VTCompressionSession::wrap_under_create_rule(session) })
     }
 
     pub fn invalidate(&self) {
@@ -164,11 +161,7 @@ impl VTCompressionSession {
 
     pub fn prepare_to_encode_frames(&self) -> Result<(), OSStatus> {
         let status = unsafe { VTCompressionSessionPrepareToEncodeFrames(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub unsafe fn encode_frame(
@@ -191,11 +184,7 @@ impl VTCompressionSession {
             &mut info_flags_out,
         );
 
-        if status == 0 {
-            Ok(info_flags_out)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| info_flags_out)
     }
 
     pub fn encode_frame_with_closure<F>(
@@ -228,48 +217,30 @@ impl VTCompressionSession {
             )
         };
 
-        if status == 0 {
-            Ok(info_flags_out)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| info_flags_out)
     }
 
     pub fn complete_frames(&self, complete_until_presentation_time_stamp: CMTime) -> Result<(), OSStatus> {
         let status = unsafe { VTCompressionSessionCompleteFrames(self.as_concrete_TypeRef(), complete_until_presentation_time_stamp) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub fn begin_pass(&self, begin_pass_flags: VTCompressionSessionOptionFlags) -> Result<(), OSStatus> {
         let status = unsafe { VTCompressionSessionBeginPass(self.as_concrete_TypeRef(), begin_pass_flags, null_mut()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub fn end_pass(&self) -> Result<Boolean, OSStatus> {
         let mut further_passes_requested_out: Boolean = 0;
         let status = unsafe { VTCompressionSessionEndPass(self.as_concrete_TypeRef(), &mut further_passes_requested_out, null_mut()) };
-        if status == 0 {
-            Ok(further_passes_requested_out)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| further_passes_requested_out)
     }
 
     pub fn get_time_ranges_for_next_pass(&self) -> Result<Vec<CMTimeRange>, OSStatus> {
         let mut time_range_count_out: CMItemCount = 0;
 
         let status = unsafe { VTCompressionSessionGetTimeRangesForNextPass(self.as_concrete_TypeRef(), &mut time_range_count_out, null()) };
-        if status != 0 {
-            return Err(status);
-        }
+        status_to_result(status)?;
 
         let mut time_range_array: Vec<CMTimeRange> = Vec::with_capacity(time_range_count_out as usize);
         let status = unsafe {
@@ -281,10 +252,6 @@ impl VTCompressionSession {
             result
         };
 
-        if status == 0 {
-            Ok(time_range_array)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| time_range_array)
     }
 }

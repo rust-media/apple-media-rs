@@ -16,7 +16,7 @@ use libc::{c_void, size_t};
 use objc2::encode::{Encoding, RefEncode};
 
 use crate::{
-    base::CMItemCount,
+    base::{status_to_result, CMItemCount},
     block_buffer::{CMBlockBuffer, CMBlockBufferRef},
     format_description::{CMFormatDescription, CMFormatDescriptionRef, CMVideoFormatDescription, CMVideoFormatDescriptionRef},
     time::CMTime,
@@ -370,11 +370,7 @@ impl CMSampleBuffer {
                 &mut sample_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
@@ -413,11 +409,7 @@ impl CMSampleBuffer {
                 handler.as_ref().map_or(null(), |h| &**h),
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
@@ -442,11 +434,7 @@ impl CMSampleBuffer {
                 &mut sample_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     pub unsafe fn new_audio_sample_buffer_with_packet_descriptions(
@@ -474,11 +462,7 @@ impl CMSampleBuffer {
                 &mut sample_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     pub fn new_audio_sample_buffer_with_packet_descriptions_and_make_data_ready_closure<F>(
@@ -514,11 +498,7 @@ impl CMSampleBuffer {
                 handler.as_ref().map_or(null(), |h| &**h),
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
@@ -541,11 +521,7 @@ impl CMSampleBuffer {
                 &mut sample_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     pub unsafe fn from_image_buffer(
@@ -567,11 +543,7 @@ impl CMSampleBuffer {
             sample_timing,
             &mut sample_buffer,
         );
-        if status == 0 {
-            Ok(CMSampleBuffer::wrap_under_create_rule(sample_buffer))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| CMSampleBuffer::wrap_under_create_rule(sample_buffer))
     }
 
     pub fn from_image_buffer_with_make_data_ready_closure<F>(
@@ -603,11 +575,7 @@ impl CMSampleBuffer {
                 handler.as_ref().map_or(null(), |h| &**h),
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
@@ -626,22 +594,14 @@ impl CMSampleBuffer {
                 &mut sample_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
     pub fn copy(&self) -> Result<CMSampleBuffer, OSStatus> {
         let mut sample_buffer: CMSampleBufferRef = null_mut();
         let status = unsafe { CMSampleBufferCreateCopy(kCFAllocatorDefault, self.as_concrete_TypeRef(), &mut sample_buffer) };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
@@ -656,11 +616,7 @@ impl CMSampleBuffer {
                 &mut sample_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
@@ -668,21 +624,13 @@ impl CMSampleBuffer {
         let mut sample_buffer: CMSampleBufferRef = null_mut();
         let status =
             unsafe { CMSampleBufferCopySampleBufferForRange(kCFAllocatorDefault, self.as_concrete_TypeRef(), sample_range, &mut sample_buffer) };
-        if status == 0 {
-            Ok(unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
     }
 
     #[inline]
     pub fn set_data_buffer(&self, data_buffer: &CMBlockBuffer) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferSetDataBuffer(self.as_concrete_TypeRef(), data_buffer.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -714,21 +662,13 @@ impl CMSampleBuffer {
         let status = unsafe {
             CMSampleBufferSetDataBufferFromAudioBufferList(self.as_concrete_TypeRef(), kCFAllocatorDefault, kCFAllocatorDefault, flags, buffer_list)
         };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn set_data_ready(&self) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferSetDataReady(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -739,11 +679,7 @@ impl CMSampleBuffer {
     #[inline]
     pub fn set_data_failed(&self, status: OSStatus) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferSetDataFailed(self.as_concrete_TypeRef(), status) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -756,31 +692,19 @@ impl CMSampleBuffer {
     #[inline]
     pub fn make_data_ready(&self) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferMakeDataReady(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn track_data_readiness(&self, sample_buffer_to_track: &CMSampleBuffer) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferTrackDataReadiness(self.as_concrete_TypeRef(), sample_buffer_to_track.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn invalidate(&self) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferInvalidate(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub unsafe fn set_invalidate_callback(
@@ -789,11 +713,7 @@ impl CMSampleBuffer {
         invalidate_ref_con: u64,
     ) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferSetInvalidateCallback(self.as_concrete_TypeRef(), invalidate_callback, invalidate_ref_con) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub fn set_invalidate_closure<F>(&self, invalidate_closure: Option<F>) -> Result<(), OSStatus>
@@ -815,11 +735,7 @@ impl CMSampleBuffer {
                     .map_or(null(), |h| &**h),
             )
         };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -860,11 +776,7 @@ impl CMSampleBuffer {
     #[inline]
     pub fn set_output_presentation_time_stamp(&self, output_presentation_time_stamp: CMTime) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferSetOutputPresentationTimeStamp(self.as_concrete_TypeRef(), output_presentation_time_stamp) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -969,11 +881,7 @@ impl CMSampleBuffer {
         refcon: *mut c_void,
     ) -> Result<(), OSStatus> {
         let status = unsafe { CMSampleBufferCallForEachSample(self.as_concrete_TypeRef(), callback, refcon) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub fn call_closure_for_each_sample<F>(&self, closure: Option<F>) -> Result<(), OSStatus>
@@ -995,10 +903,6 @@ impl CMSampleBuffer {
                     .map_or(null(), |h| &**h),
             )
         };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 }

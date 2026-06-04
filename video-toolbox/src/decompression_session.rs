@@ -20,6 +20,7 @@ use core_video::{
 use libc::c_void;
 
 use crate::{
+    base::status_to_result,
     errors::{VTDecodeFrameFlags, VTDecodeInfoFlags},
     session::{TVTSession, VTSessionRef},
 };
@@ -106,11 +107,7 @@ impl VTDecompressionSession {
             output_callback.unwrap_or(null()),
             &mut session,
         );
-        if status == 0 {
-            Ok(TCFType::wrap_under_create_rule(session))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| TCFType::wrap_under_create_rule(session))
     }
 
     pub unsafe fn decode_frame(
@@ -129,11 +126,7 @@ impl VTDecompressionSession {
             &mut info_flags_out,
         );
 
-        if status == 0 {
-            Ok(info_flags_out)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| info_flags_out)
     }
 
     pub fn decode_frame_with_closure<F>(
@@ -165,20 +158,12 @@ impl VTDecompressionSession {
             )
         };
 
-        if status == 0 {
-            Ok(info_flags_out)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| info_flags_out)
     }
 
     pub fn finish_delayed_frames(&self) -> Result<(), OSStatus> {
         let status = unsafe { VTDecompressionSessionFinishDelayedFrames(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub fn can_accept_format_description(&self, new_format_desc: CMFormatDescription) -> bool {
@@ -187,21 +172,13 @@ impl VTDecompressionSession {
 
     pub fn wait_for_asynchronous_frames(&self) -> Result<(), OSStatus> {
         let status = unsafe { VTDecompressionSessionWaitForAsynchronousFrames(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     pub fn copy_black_pixel_buffer(&self) -> Result<CVPixelBuffer, OSStatus> {
         let mut pixel_buffer_out: CVPixelBufferRef = null_mut();
         let status = unsafe { VTDecompressionSessionCopyBlackPixelBuffer(self.as_concrete_TypeRef(), &mut pixel_buffer_out) };
-        if status == 0 {
-            Ok(unsafe { CVPixelBuffer::wrap_under_create_rule(pixel_buffer_out) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CVPixelBuffer::wrap_under_create_rule(pixel_buffer_out) })
     }
 
     pub fn is_hardware_decode_supported(codec_type: CMVideoCodecType) -> bool {

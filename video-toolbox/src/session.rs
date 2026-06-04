@@ -12,6 +12,8 @@ use core_foundation::{
 };
 use libc::c_void;
 
+use crate::base::status_to_result;
+
 pub type VTSessionRef = CFTypeRef;
 
 pub type FrameDelay = i32;
@@ -152,11 +154,7 @@ impl VTSession {
         unsafe {
             let mut dict: CFDictionaryRef = null_mut();
             let status = VTSessionCopySupportedPropertyDictionary(self.as_concrete_TypeRef(), &mut dict);
-            if status == 0 {
-                Ok(CFDictionary::wrap_under_create_rule(dict))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| CFDictionary::wrap_under_create_rule(dict))
         }
     }
 
@@ -169,11 +167,7 @@ impl VTSession {
                 kCFAllocatorDefault,
                 addr_of_mut!(value).cast(),
             );
-            if status == 0 {
-                Ok(CFType::wrap_under_create_rule(value))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| CFType::wrap_under_create_rule(value))
         }
     }
 
@@ -181,33 +175,21 @@ impl VTSession {
         unsafe {
             let mut dict: CFDictionaryRef = null_mut();
             let status = VTSessionCopySerializableProperties(self.as_concrete_TypeRef(), kCFAllocatorDefault, &mut dict);
-            if status == 0 {
-                Ok(CFDictionary::wrap_under_create_rule(dict))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| CFDictionary::wrap_under_create_rule(dict))
         }
     }
 
     pub fn set_property(&self, property_key: CFString, property_value: CFType) -> Result<(), OSStatus> {
         unsafe {
             let status = VTSessionSetProperty(self.as_concrete_TypeRef(), property_key.as_concrete_TypeRef(), property_value.as_concrete_TypeRef());
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
     pub fn set_properties(&self, property_dictionary: &CFDictionary<CFString, CFType>) -> Result<(), OSStatus> {
         unsafe {
             let status = VTSessionSetProperties(self.as_concrete_TypeRef(), property_dictionary.as_concrete_TypeRef());
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 }

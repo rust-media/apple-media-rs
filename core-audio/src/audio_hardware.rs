@@ -51,11 +51,7 @@ impl AudioObject {
     pub fn is_property_settable(self, address: &AudioObjectPropertyAddress) -> Result<bool, OSStatus> {
         let mut is_settable = 0;
         let status = unsafe { sys::AudioObjectIsPropertySettable(self.id, NonNull::from(address), NonNull::from(&mut is_settable)) };
-        if status == 0 {
-            Ok(is_settable != 0)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| is_settable != 0)
     }
 
     #[inline]
@@ -74,11 +70,7 @@ impl AudioObject {
                 NonNull::from(&mut data_size),
             )
         };
-        if status == 0 {
-            Ok(data_size)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| data_size)
     }
 
     #[inline]
@@ -99,11 +91,8 @@ impl AudioObject {
                 NonNull::new_unchecked(value.as_mut_ptr().cast()),
             )
         };
-        if status == 0 {
-            Ok(unsafe { value.assume_init() })
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        Ok(unsafe { value.assume_init() })
     }
 
     #[inline]
@@ -125,12 +114,9 @@ impl AudioObject {
                 out_data,
             )
         };
-        if status == 0 {
-            bytes.truncate(data_size as usize);
-            Ok(bytes)
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        bytes.truncate(data_size as usize);
+        Ok(bytes)
     }
 
     #[inline]
@@ -158,9 +144,7 @@ impl AudioObject {
                 out_data,
             )
         };
-        if status != 0 {
-            return Err(status);
-        }
+        status_to_result(status)?;
         if io_data_size as usize % element_size != 0 {
             return Err(sys::kAudioHardwareBadPropertySizeError);
         }

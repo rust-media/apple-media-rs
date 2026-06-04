@@ -8,6 +8,8 @@ use core_foundation::{
 use core_graphics2::image::{CGImage, CGImageRef};
 use core_video::pixel_buffer::{CVPixelBuffer, CVPixelBufferRef};
 
+use crate::base::status_to_result;
+
 extern "C" {
     pub fn VTCreateCGImageFromCVPixelBuffer(pixelBuffer: CVPixelBufferRef, options: CFDictionaryRef, imageOut: *mut CGImageRef) -> OSStatus;
 }
@@ -24,9 +26,5 @@ pub fn create_cg_image_from_cv_pixel_buffer(
             &mut image_out,
         )
     };
-    if status == 0 {
-        Ok(unsafe { CGImage::wrap_under_create_rule(image_out) })
-    } else {
-        Err(status)
-    }
+    status_to_result(status).map(|_| unsafe { CGImage::wrap_under_create_rule(image_out) })
 }

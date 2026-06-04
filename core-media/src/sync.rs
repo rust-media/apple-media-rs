@@ -9,7 +9,10 @@ use core_foundation::{
 };
 use libc::c_void;
 
-use crate::time::{CMTime, CMTimeRoundingMethod, CMTimeScale};
+use crate::{
+    base::status_to_result,
+    time::{CMTime, CMTimeRoundingMethod, CMTimeScale},
+};
 
 #[repr(C)]
 pub struct OpaqueCMClock(c_void);
@@ -125,11 +128,7 @@ impl CMClock {
         let mut clock_time = CMTime::default();
         let mut reference_clock_time = CMTime::default();
         let status = unsafe { CMClockGetAnchorTime(self.as_concrete_TypeRef(), &mut clock_time, &mut reference_clock_time) };
-        if status == 0 {
-            Ok((clock_time, reference_clock_time))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| (clock_time, reference_clock_time))
     }
 
     #[inline]
@@ -153,11 +152,7 @@ impl CMTimebase {
         unsafe {
             let mut timebase: CMTimebaseRef = null_mut();
             let status = CMTimebaseCreateWithSourceClock(kCFAllocatorDefault, source_clock.0, &mut timebase);
-            if status == 0 {
-                Ok(TCFType::wrap_under_create_rule(timebase))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(timebase))
         }
     }
 
@@ -166,11 +161,7 @@ impl CMTimebase {
         unsafe {
             let mut timebase: CMTimebaseRef = null_mut();
             let status = CMTimebaseCreateWithSourceTimebase(kCFAllocatorDefault, source_timebase.0, &mut timebase);
-            if status == 0 {
-                Ok(TCFType::wrap_under_create_rule(timebase))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(timebase))
         }
     }
 
@@ -225,21 +216,13 @@ impl CMTimebase {
     #[inline]
     pub fn set_source_clock(&self, new_source_clock: &CMClock) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetSourceClock(self.as_concrete_TypeRef(), new_source_clock.0) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn set_source_timebase(&self, new_source_timebase: &CMTimebase) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetSourceTimebase(self.as_concrete_TypeRef(), new_source_timebase.0) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -255,21 +238,13 @@ impl CMTimebase {
     #[inline]
     pub fn set_time(&self, time: CMTime) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetTime(self.as_concrete_TypeRef(), time) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn set_anchor_time(&self, timebase_time: CMTime, immediate_source_time: CMTime) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetAnchorTime(self.as_concrete_TypeRef(), timebase_time, immediate_source_time) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -282,31 +257,19 @@ impl CMTimebase {
         let mut time = CMTime::default();
         let mut rate = 0.0;
         let status = unsafe { CMTimebaseGetTimeAndRate(self.as_concrete_TypeRef(), &mut time, &mut rate) };
-        if status == 0 {
-            Ok((time, rate))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| (time, rate))
     }
 
     #[inline]
     pub fn set_rate(&self, rate: f64) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetRate(self.as_concrete_TypeRef(), rate) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn set_rate_and_anchor_time(&self, rate: f64, timebase_time: CMTime, immediate_source_time: CMTime) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetRateAndAnchorTime(self.as_concrete_TypeRef(), rate, timebase_time, immediate_source_time) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -317,51 +280,31 @@ impl CMTimebase {
     #[inline]
     pub fn add_timer(&self, timer: &CFRunLoopTimer, run_loop: &CFRunLoop) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseAddTimer(self.as_concrete_TypeRef(), timer.as_concrete_TypeRef(), run_loop.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn remove_timer(&self, timer: &CFRunLoopTimer) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseRemoveTimer(self.as_concrete_TypeRef(), timer.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn set_timer_next_fire_time(&self, timer: &CFRunLoopTimer, fire_time: CMTime, flags: u32) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetTimerNextFireTime(self.as_concrete_TypeRef(), timer.as_concrete_TypeRef(), fire_time, flags) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn set_timer_to_fire_immediately(&self, timer: &CFRunLoopTimer) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseSetTimerToFireImmediately(self.as_concrete_TypeRef(), timer.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
     pub fn notification_barrier(&self) -> Result<(), OSStatus> {
         let status = unsafe { CMTimebaseNotificationBarrier(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 }
 
@@ -444,11 +387,7 @@ impl CMClockOrTimebase {
                 &mut relative_to_clock_or_timebase_anchor_time,
             )
         };
-        if status == 0 {
-            Ok((relative_rate, of_clock_or_timebase_anchor_time, relative_to_clock_or_timebase_anchor_time))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| (relative_rate, of_clock_or_timebase_anchor_time, relative_to_clock_or_timebase_anchor_time))
     }
 
     #[inline]

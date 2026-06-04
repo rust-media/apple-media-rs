@@ -8,6 +8,7 @@ use core_foundation::{
 use libc::size_t;
 
 use crate::{
+    base::status_to_result,
     block_buffer::{CMBlockBuffer, CMBlockBufferRef},
     format_description::{
         CMAudioFormatDescription, CMAudioFormatDescriptionRef, CMClosedCaptionFormatDescriptionRef, CMMediaType, CMMetadataFormatDescriptionRef,
@@ -219,11 +220,7 @@ impl CMAudioFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMAudioFormatDescription::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMAudioFormatDescription::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -240,11 +237,7 @@ impl CMAudioFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMAudioFormatDescription::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMAudioFormatDescription::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -258,11 +251,7 @@ impl CMAudioFormatDescription {
                 &mut block_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMBlockBuffer::wrap_under_create_rule(block_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMBlockBuffer::wrap_under_create_rule(block_buffer) })
     }
 }
 
@@ -291,11 +280,7 @@ impl CMVideoFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMVideoFormatDescription::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMVideoFormatDescription::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -314,11 +299,7 @@ impl CMVideoFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMVideoFormatDescription::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMVideoFormatDescription::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -337,10 +318,6 @@ impl CMVideoFormatDescription {
                 &mut block_buffer,
             )
         };
-        if status == 0 {
-            Ok(unsafe { CMBlockBuffer::wrap_under_create_rule(block_buffer) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMBlockBuffer::wrap_under_create_rule(block_buffer) })
     }
 }
