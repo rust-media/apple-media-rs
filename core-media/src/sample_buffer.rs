@@ -1,7 +1,7 @@
 use std::ptr::{null, null_mut};
 
 use block::{Block, ConcreteBlock};
-use core_audio_types::base_types::{AudioBufferList, AudioStreamPacketDescription};
+use core_audio_types::{AudioBufferList, AudioStreamPacketDescription};
 use core_foundation::{
     array::{CFArray, CFArrayRef},
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFRange, CFType, CFTypeID, OSStatus, TCFType},

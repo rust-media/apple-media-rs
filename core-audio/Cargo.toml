@@ -1,10 +1,10 @@
 [package]
-name = "core-audio-types"
-description = "Bindings to CoreAudioTypes framework"
+name = "core-audio"
+description = "Safe bindings to CoreAudio framework"
 homepage.workspace = true
 repository.workspace = true
-documentation = "https://docs.rs/core-audio-types"
-version = "0.3.0"
+documentation = "https://docs.rs/core-audio"
+version = "0.1.0"
 authors.workspace = true
 license.workspace = true
 categories = ["multimedia::audio", "os::macos-apis"]
@@ -12,16 +12,17 @@ keywords = ["coreaudio"]
 edition.workspace = true
 
 [dependencies]
-objc2-core-audio-types = { version = "0.3.2", default-features = false, features = ["AudioSessionTypes", "CoreAudioBaseTypes", "bitflags"] }
+core-audio-types.workspace = true
+core-foundation.workspace = true
+libc.workspace = true
+objc2-core-audio = { version = "0.3.2", default-features = false, features = ["AudioHardware", "HostTime", "objc2-core-audio-types", "libc"] }
 
 [features]
 default = ["std"]
-std = ["objc2-core-audio-types/std"]
-objc = ["objc2-core-audio-types/objc2"]
+std = ["objc2-core-audio/std"]
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["std"]
 default-target = "x86_64-apple-darwin"
 targets = [
     "x86_64-apple-darwin",

@@ -1,0 +1,33 @@
+[package]
+name = "audio-toolbox"
+description = "Safe bindings to AudioToolbox framework"
+homepage.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/audio-toolbox"
+version = "0.1.0"
+authors.workspace = true
+license.workspace = true
+categories = ["multimedia", "multimedia::audio", "os::macos-apis"]
+keywords = ["audiotoolbox", "coreaudio"]
+edition.workspace = true
+
+[dependencies]
+core-audio-types.workspace = true
+core-foundation.workspace = true
+libc.workspace = true
+objc2-audio-toolbox = { version = "0.3.2", default-features = false, features = ["AudioComponent", "AUComponent", "AudioConverter", "AudioOutputUnit", "AudioUnitProperties", "objc2-core-audio-types", "bitflags", "libc"] }
+
+[features]
+default = ["std"]
+std = ["objc2-audio-toolbox/std"]
+
+
+[package.metadata.docs.rs]
+no-default-features = true
+default-target = "x86_64-apple-darwin"
+targets = [
+    "x86_64-apple-darwin",
+    "x86_64-apple-ios",
+    "aarch64-apple-darwin",
+    "aarch64-apple-ios",
+]
