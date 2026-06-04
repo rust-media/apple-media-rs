@@ -4,6 +4,8 @@ use core_foundation::base::OSStatus;
 use objc2_audio_toolbox as sys;
 pub use sys::{AudioComponentDescription, AudioComponentFlags, AudioComponentInstantiationOptions};
 
+use crate::base::status_to_result;
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Component {
     raw: NonNull<sys::OpaqueAudioComponent>,
@@ -42,31 +44,20 @@ impl Component {
             componentFlagsMask: 0,
         };
         let status = unsafe { sys::AudioComponentGetDescription(self.as_raw(), NonNull::from(&mut description)) };
-        if status == 0 {
-            Ok(description)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| description)
     }
 
     pub fn version(self) -> Result<u32, OSStatus> {
         let mut version = 0;
         let status = unsafe { sys::AudioComponentGetVersion(self.as_raw(), NonNull::from(&mut version)) };
-        if status == 0 {
-            Ok(version)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| version)
     }
 
     pub fn instantiate(self) -> Result<ComponentInstance, OSStatus> {
         let mut instance = null_mut();
         let status = unsafe { sys::AudioComponentInstanceNew(self.as_raw(), NonNull::from(&mut instance)) };
-        if status == 0 {
-            unsafe { ComponentInstance::from_raw(instance).ok_or(sys::kAudioComponentErr_InstanceInvalidated) }
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        unsafe { ComponentInstance::from_raw(instance).ok_or(sys::kAudioComponentErr_InstanceInvalidated) }
     }
 }
 

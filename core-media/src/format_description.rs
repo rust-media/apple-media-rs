@@ -23,7 +23,7 @@ use libc::{c_int, c_void, size_t};
 #[cfg(feature = "objc")]
 use objc2::encode::{Encoding, RefEncode};
 
-use crate::{time::CMTime, OSType};
+use crate::{base::status_to_result, time::CMTime, OSType};
 
 pub const kCMFormatDescriptionError_InvalidParameter: OSStatus = -12710;
 pub const kCMFormatDescriptionError_AllocationFailed: OSStatus = -12711;
@@ -656,11 +656,7 @@ impl CMFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -747,11 +743,7 @@ impl CMAudioFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -840,11 +832,7 @@ impl CMAudioFormatDescription {
         let status = unsafe {
             CMAudioFormatDescriptionCreateSummary(kCFAllocatorDefault, format_description_array.as_concrete_TypeRef(), flags, &mut format_description)
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -875,11 +863,7 @@ impl CMVideoFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -887,11 +871,7 @@ impl CMVideoFormatDescription {
         let mut format_description: CMVideoFormatDescriptionRef = null_mut();
         let status =
             unsafe { CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, image_buffer.as_concrete_TypeRef(), &mut format_description) };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -907,11 +887,7 @@ impl CMVideoFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -932,11 +908,7 @@ impl CMVideoFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -955,11 +927,8 @@ impl CMVideoFormatDescription {
                 &mut nal_unit_header_length,
             )
         };
-        if status == 0 {
-            Ok((unsafe { from_raw_parts(parameter_set_pointer, parameter_set_size) }, parameter_set_count, nal_unit_header_length))
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
+            .map(|_| (unsafe { from_raw_parts(parameter_set_pointer, parameter_set_size) }, parameter_set_count, nal_unit_header_length))
     }
 
     #[inline]
@@ -978,11 +947,8 @@ impl CMVideoFormatDescription {
                 &mut nal_unit_header_length,
             )
         };
-        if status == 0 {
-            Ok((unsafe { from_raw_parts(parameter_set_pointer, parameter_set_size) }, parameter_set_count, nal_unit_header_length))
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
+            .map(|_| (unsafe { from_raw_parts(parameter_set_pointer, parameter_set_size) }, parameter_set_count, nal_unit_header_length))
     }
 
     #[inline]
@@ -1028,11 +994,7 @@ impl CMMuxedFormatDescription {
         let mut format_description: CMMuxedFormatDescriptionRef = null_mut();
         let status =
             unsafe { CMMuxedFormatDescriptionCreate(kCFAllocatorDefault, mux_type, extensions.as_concrete_TypeRef(), &mut format_description) };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -1060,11 +1022,7 @@ impl CMClosedCaptionFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -1092,11 +1050,7 @@ impl CMTextFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -1108,11 +1062,7 @@ impl CMTextFormatDescription {
     pub fn get_display_flags(&self) -> Result<CMTextDisplayFlags, OSStatus> {
         let mut display_flags = 0;
         let status = unsafe { CMTextFormatDescriptionGetDisplayFlags(self.as_concrete_TypeRef(), &mut display_flags) };
-        if status == 0 {
-            Ok(display_flags)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| display_flags)
     }
 
     #[inline]
@@ -1122,11 +1072,7 @@ impl CMTextFormatDescription {
         let status = unsafe {
             CMTextFormatDescriptionGetJustification(self.as_concrete_TypeRef(), &mut horizontal_justification, &mut vertical_justification)
         };
-        if status == 0 {
-            Ok((horizontal_justification, vertical_justification))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| (horizontal_justification, vertical_justification))
     }
 
     #[inline]
@@ -1140,11 +1086,7 @@ impl CMTextFormatDescription {
                 &mut default_text_box,
             )
         };
-        if status == 0 {
-            Ok(default_text_box)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| default_text_box)
     }
 
     #[inline]
@@ -1166,22 +1108,14 @@ impl CMTextFormatDescription {
                 &mut color_components,
             )
         };
-        if status == 0 {
-            Ok((local_font_id, bold != 0, italic != 0, underline != 0, font_size, color_components))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| (local_font_id, bold != 0, italic != 0, underline != 0, font_size, color_components))
     }
 
     #[inline]
     pub fn get_font_name(&self, local_font_id: u16) -> Result<CFString, OSStatus> {
         let mut font_name = null();
         let status = unsafe { CMTextFormatDescriptionGetFontName(self.as_concrete_TypeRef(), local_font_id, &mut font_name) };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(font_name) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(font_name) })
     }
 }
 
@@ -1212,11 +1146,7 @@ impl CMTimeCodeFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -1258,11 +1188,7 @@ impl CMMetadataFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -1279,11 +1205,7 @@ impl CMMetadataFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -1300,11 +1222,7 @@ impl CMMetadataFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]
@@ -1321,11 +1239,7 @@ impl CMMetadataFormatDescription {
                 &mut format_description,
             )
         };
-        if status == 0 {
-            Ok(unsafe { TCFType::wrap_under_create_rule(format_description) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 
     #[inline]

@@ -38,11 +38,8 @@ impl AudioConverter {
         let mut converter = std::ptr::null_mut();
         let status =
             unsafe { sys::AudioConverterNew(NonNull::from(source_format), NonNull::from(destination_format), NonNull::from(&mut converter)) };
-        if status == 0 {
-            unsafe { Self::from_raw(converter).ok_or(sys::kAudioConverterErr_UnspecifiedError) }
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        unsafe { Self::from_raw(converter).ok_or(sys::kAudioConverterErr_UnspecifiedError) }
     }
 
     pub fn new_specific(
@@ -62,11 +59,8 @@ impl AudioConverter {
                 NonNull::from(&mut converter),
             )
         };
-        if status == 0 {
-            unsafe { Self::from_raw(converter).ok_or(sys::kAudioConverterErr_UnspecifiedError) }
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        unsafe { Self::from_raw(converter).ok_or(sys::kAudioConverterErr_UnspecifiedError) }
     }
 
     pub fn new_with_options(
@@ -78,11 +72,8 @@ impl AudioConverter {
         let status = unsafe {
             sys::AudioConverterNewWithOptions(NonNull::from(source_format), NonNull::from(destination_format), options, NonNull::from(&mut converter))
         };
-        if status == 0 {
-            unsafe { Self::from_raw(converter).ok_or(sys::kAudioConverterErr_UnspecifiedError) }
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        unsafe { Self::from_raw(converter).ok_or(sys::kAudioConverterErr_UnspecifiedError) }
     }
 
     #[inline]
@@ -95,11 +86,7 @@ impl AudioConverter {
         let mut size = 0;
         let mut writable = 0;
         let status = unsafe { sys::AudioConverterGetPropertyInfo(self.as_raw(), property_id, &mut size, &mut writable) };
-        if status == 0 {
-            Ok((size, writable != 0))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| (size, writable != 0))
     }
 
     #[inline]
@@ -109,11 +96,8 @@ impl AudioConverter {
         let status = unsafe {
             sys::AudioConverterGetProperty(self.as_raw(), property_id, NonNull::from(&mut size), NonNull::new_unchecked(value.as_mut_ptr().cast()))
         };
-        if status == 0 {
-            Ok(unsafe { value.assume_init() })
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        Ok(unsafe { value.assume_init() })
     }
 
     pub fn get_property_bytes(&self, property_id: AudioConverterPropertyID) -> Result<Vec<u8>, OSStatus> {
@@ -122,12 +106,9 @@ impl AudioConverter {
         let mut io_size = size;
         let out_data = NonNull::new(bytes.as_mut_ptr().cast::<c_void>()).unwrap_or_else(NonNull::dangling);
         let status = unsafe { sys::AudioConverterGetProperty(self.as_raw(), property_id, NonNull::from(&mut io_size), out_data) };
-        if status == 0 {
-            bytes.truncate(io_size as usize);
-            Ok(bytes)
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        bytes.truncate(io_size as usize);
+        Ok(bytes)
     }
 
     #[inline]
@@ -148,11 +129,7 @@ impl AudioConverter {
         let mut output_size = output.len() as u32;
         let status =
             unsafe { sys::AudioConverterConvertBuffer(self.as_raw(), input.len() as u32, input_data, NonNull::from(&mut output_size), output_data) };
-        if status == 0 {
-            Ok(output_size as usize)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| output_size as usize)
     }
 
     pub unsafe fn convert_complex_buffer(

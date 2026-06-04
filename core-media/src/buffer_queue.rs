@@ -11,7 +11,10 @@ use core_foundation::{
 };
 use libc::{c_void, size_t};
 
-use crate::{base::CMItemCount, time::CMTime};
+use crate::{
+    base::{status_to_result, CMItemCount},
+    time::CMTime,
+};
 
 pub const kCMBufferQueueError_AllocationFailed: OSStatus = -12760;
 pub const kCMBufferQueueError_RequiredParameterMissing: OSStatus = -12761;
@@ -222,11 +225,7 @@ impl CMBufferQueue {
         unsafe {
             let mut queue: CMBufferQueueRef = null_mut();
             let status = CMBufferQueueCreate(kCFAllocatorDefault, callbacks.len() as CMItemCount, callbacks.as_ptr(), &mut queue);
-            if status == 0 {
-                Ok(TCFType::wrap_under_create_rule(queue))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(queue))
         }
     }
 
@@ -234,11 +233,7 @@ impl CMBufferQueue {
     pub fn enqueue(&self, buf: &CMBuffer) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueEnqueue(self.as_concrete_TypeRef(), buf.as_concrete_TypeRef());
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -299,11 +294,7 @@ impl CMBufferQueue {
     pub fn mark_end_of_data(&self) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueMarkEndOfData(self.as_concrete_TypeRef());
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -321,11 +312,7 @@ impl CMBufferQueue {
     pub fn reset(&self) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueReset(self.as_concrete_TypeRef());
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -337,11 +324,7 @@ impl CMBufferQueue {
     ) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueResetWithCallback(self.as_concrete_TypeRef(), callback, refcon);
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -400,11 +383,7 @@ impl CMBufferQueue {
         unsafe {
             let mut token = null();
             let status = CMBufferQueueInstallTrigger(self.as_concrete_TypeRef(), callback, refcon, condition, time, &mut token);
-            if status == 0 {
-                Ok(token)
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| token)
         }
     }
 
@@ -419,11 +398,7 @@ impl CMBufferQueue {
             let mut token = null();
             let status =
                 CMBufferQueueInstallTriggerWithIntegerThreshold(self.as_concrete_TypeRef(), callback, refcon, condition, threshold, &mut token);
-            if status == 0 {
-                Ok(token)
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| token)
         }
     }
 
@@ -446,11 +421,7 @@ impl CMBufferQueue {
         let status = unsafe {
             CMBufferQueueInstallTriggerHandler(self.as_concrete_TypeRef(), condition, time, &mut token, handler.as_ref().map_or(null(), |h| &**h))
         };
-        if status == 0 {
-            Ok(token)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| token)
     }
 
     pub fn install_trigger_with_integer_threshold_closure<F>(
@@ -478,22 +449,14 @@ impl CMBufferQueue {
                 handler.as_ref().map_or(null(), |h| &**h),
             )
         };
-        if status == 0 {
-            Ok(token)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| token)
     }
 
     #[inline]
     pub fn remove_trigger(&self, token: CMBufferQueueTriggerToken) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueRemoveTrigger(self.as_concrete_TypeRef(), token);
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -510,22 +473,14 @@ impl CMBufferQueue {
     ) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueCallForEachBuffer(self.as_concrete_TypeRef(), callback, refcon);
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
     pub unsafe fn set_validation_callback(&self, callback: CMBufferValidationCallback, refcon: *mut c_void) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueSetValidationCallback(self.as_concrete_TypeRef(), callback, refcon);
-            if status == 0 {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -543,10 +498,6 @@ impl CMBufferQueue {
         });
 
         let status = unsafe { CMBufferQueueSetValidationHandler(self.as_concrete_TypeRef(), handler.as_ref().map_or(null(), |h| &**h)) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 }

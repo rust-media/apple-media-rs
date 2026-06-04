@@ -39,11 +39,7 @@ impl Unit {
         let mut size: u32 = 0;
         let mut writable: u8 = 0;
         let status = unsafe { sys::AudioUnitGetPropertyInfo(self.as_raw(), property_id, scope, element, &mut size, &mut writable) };
-        if status == 0 {
-            Ok((size, writable != 0))
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| (size, writable != 0))
     }
 
     #[inline]
@@ -60,11 +56,8 @@ impl Unit {
                 NonNull::from(&mut size),
             )
         };
-        if status == 0 {
-            Ok(unsafe { value.assume_init() })
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        Ok(unsafe { value.assume_init() })
     }
 
     pub fn get_property_bytes(
@@ -78,12 +71,9 @@ impl Unit {
         let mut io_size = size;
         let out_data = NonNull::new(bytes.as_mut_ptr().cast::<c_void>()).unwrap_or_else(NonNull::dangling);
         let status = unsafe { sys::AudioUnitGetProperty(self.as_raw(), property_id, scope, element, out_data, NonNull::from(&mut io_size)) };
-        if status == 0 {
-            bytes.truncate(io_size as usize);
-            Ok(bytes)
-        } else {
-            Err(status)
-        }
+        status_to_result(status)?;
+        bytes.truncate(io_size as usize);
+        Ok(bytes)
     }
 
     #[inline]
@@ -126,11 +116,7 @@ impl Unit {
     ) -> Result<AudioUnitParameterValue, OSStatus> {
         let mut value: AudioUnitParameterValue = 0.0;
         let status = unsafe { sys::AudioUnitGetParameter(self.as_raw(), parameter_id, scope, element, NonNull::from(&mut value)) };
-        if status == 0 {
-            Ok(value)
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| value)
     }
 
     #[inline]

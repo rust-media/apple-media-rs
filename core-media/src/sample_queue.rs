@@ -6,6 +6,8 @@ use core_foundation::{
 };
 use libc::c_void;
 
+use crate::base::status_to_result;
+
 pub const kCMSimpleQueueError_AllocationFailed: OSStatus = -12770;
 pub const kCMSimpleQueueError_RequiredParameterMissing: OSStatus = -12771;
 pub const kCMSimpleQueueError_ParameterOutOfRange: OSStatus = -12772;
@@ -36,21 +38,13 @@ impl CMSimpleQueue {
     pub fn new(capacity: i32) -> Result<CMSimpleQueue, OSStatus> {
         let mut queue: CMSimpleQueueRef = null_mut();
         let status = unsafe { CMSimpleQueueCreate(kCFAllocatorDefault, capacity, &mut queue) };
-        if status == 0 {
-            Ok(unsafe { CMSimpleQueue::wrap_under_create_rule(queue) })
-        } else {
-            Err(status)
-        }
+        status_to_result(status).map(|_| unsafe { CMSimpleQueue::wrap_under_create_rule(queue) })
     }
 
     #[inline]
     pub fn enqueue(&self, element: *const c_void) -> Result<(), OSStatus> {
         let status = unsafe { CMSimpleQueueEnqueue(self.as_concrete_TypeRef(), element) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]
@@ -66,11 +60,7 @@ impl CMSimpleQueue {
     #[inline]
     pub fn reset(&self) -> Result<(), OSStatus> {
         let status = unsafe { CMSimpleQueueReset(self.as_concrete_TypeRef()) };
-        if status == 0 {
-            Ok(())
-        } else {
-            Err(status)
-        }
+        status_to_result(status)
     }
 
     #[inline]

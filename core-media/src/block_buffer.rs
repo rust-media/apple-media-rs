@@ -6,6 +6,8 @@ use core_foundation::{
 };
 use libc::{c_void, size_t};
 
+use crate::base::status_to_result;
+
 pub const kCMBlockBufferNoErr: OSStatus = 0;
 pub const kCMBlockBufferStructureAllocationFailedErr: OSStatus = -12700;
 pub const kCMBlockBufferBlockAllocationFailedErr: OSStatus = -12701;
@@ -141,11 +143,7 @@ impl CMBlockBuffer {
         unsafe {
             let mut block_buffer: CMBlockBufferRef = null_mut();
             let status = CMBlockBufferCreateEmpty(kCFAllocatorDefault, sub_block_capacity, flags, &mut block_buffer);
-            if status == kCMBlockBufferNoErr {
-                Ok(TCFType::wrap_under_create_rule(block_buffer))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(block_buffer))
         }
     }
 
@@ -170,11 +168,7 @@ impl CMBlockBuffer {
                 flags,
                 &mut block_buffer,
             );
-            if status == kCMBlockBufferNoErr {
-                Ok(TCFType::wrap_under_create_rule(block_buffer))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(block_buffer))
         }
     }
 
@@ -195,11 +189,7 @@ impl CMBlockBuffer {
                 flags,
                 &mut block_buffer,
             );
-            if status == kCMBlockBufferNoErr {
-                Ok(TCFType::wrap_under_create_rule(block_buffer))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(block_buffer))
         }
     }
 
@@ -223,11 +213,7 @@ impl CMBlockBuffer {
                 flags,
                 &mut block_buffer,
             );
-            if status == kCMBlockBufferNoErr {
-                Ok(TCFType::wrap_under_create_rule(block_buffer))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(block_buffer))
         }
     }
 
@@ -251,11 +237,7 @@ impl CMBlockBuffer {
                 data_length,
                 flags,
             );
-            if status == kCMBlockBufferNoErr {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -269,11 +251,7 @@ impl CMBlockBuffer {
     ) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBlockBufferAppendBufferReference(self.as_concrete_TypeRef(), target_block_buf.0, offset_to_data, data_length, flags);
-            if status == kCMBlockBufferNoErr {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -293,11 +271,7 @@ impl CMBlockBuffer {
                 temporary_block.as_mut_ptr() as *mut c_void,
                 &mut returned_pointer,
             );
-            if status == kCMBlockBufferNoErr {
-                Ok(from_raw_parts_mut(returned_pointer as *mut u8, temporary_block.len()))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| from_raw_parts_mut(returned_pointer as *mut u8, temporary_block.len()))
         }
     }
 
@@ -310,11 +284,7 @@ impl CMBlockBuffer {
                 destination.len() as size_t,
                 destination.as_mut_ptr() as *mut c_void,
             );
-            if status == kCMBlockBufferNoErr {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -327,11 +297,7 @@ impl CMBlockBuffer {
                 offset_into_destination,
                 source_bytes.len() as size_t,
             );
-            if status == kCMBlockBufferNoErr {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -339,11 +305,7 @@ impl CMBlockBuffer {
     pub fn fill_data_bytes(&self, fill_byte: u8, offset_into_destination: size_t, data_length: size_t) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBlockBufferFillDataBytes(fill_byte, self.as_concrete_TypeRef(), offset_into_destination, data_length);
-            if status == kCMBlockBufferNoErr {
-                Ok(())
-            } else {
-                Err(status)
-            }
+            status_to_result(status)
         }
     }
 
@@ -354,11 +316,7 @@ impl CMBlockBuffer {
             let mut total_length: size_t = 0;
             let mut data_pointer: *mut c_void = null_mut();
             let status = CMBlockBufferGetDataPointer(self.as_concrete_TypeRef(), offset, &mut length_at_offset, &mut total_length, &mut data_pointer);
-            if status == kCMBlockBufferNoErr {
-                Ok(from_raw_parts_mut(data_pointer as *mut u8, length_at_offset))
-            } else {
-                Err(status)
-            }
+            status_to_result(status).map(|_| from_raw_parts_mut(data_pointer as *mut u8, length_at_offset))
         }
     }
 
