@@ -4,7 +4,7 @@ use std::{
     slice::from_raw_parts,
 };
 
-use core_audio_types::base_types::{AudioChannelLayout, AudioFormatListItem, AudioStreamBasicDescription};
+use core_audio_types::{AudioChannelLayout, AudioFormatListItem, AudioStreamBasicDescription};
 use core_foundation::{
     array::{CFArray, CFArrayRef},
     base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFType, CFTypeID, CFTypeRef, OSStatus, TCFType, TCFTypeRef},
