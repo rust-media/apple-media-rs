@@ -3,13 +3,13 @@ use std::sync::mpsc::channel;
 use core_foundation::base::TCFType;
 use core_media::sample_buffer::{CMSampleBuffer, CMSampleBufferRef};
 use core_video::pixel_buffer::CVPixelBuffer;
-use dispatch2::{Queue, QueueAttribute};
+use dispatch2::{DispatchQueue, DispatchQueueAttr};
 use libc::size_t;
 use objc2::{
-    declare_class, extern_methods, msg_send_id, mutability,
-    rc::{Allocated, Id},
+    define_class, msg_send,
+    rc::{Allocated, Retained},
     runtime::ProtocolObject,
-    ClassType, DeclaredClass,
+    AnyThread,
 };
 use objc2_foundation::{NSArray, NSError, NSObject, NSObjectProtocol};
 use screen_capture_kit::{
@@ -19,23 +19,16 @@ use screen_capture_kit::{
 
 pub struct DelegateIvars {}
 
-declare_class!(
+define_class!(
+    #[unsafe(super(NSObject))]
+    #[name = "StreamOutputSampleBufferDelegate"]
+    #[ivars = DelegateIvars]
     struct Delegate;
-
-    unsafe impl ClassType for Delegate {
-        type Super = NSObject;
-        type Mutability = mutability::Mutable;
-        const NAME: &'static str = "StreamOutputSampleBufferDelegate";
-    }
-
-    impl DeclaredClass for Delegate {
-        type Ivars = DelegateIvars;
-    }
 
     unsafe impl NSObjectProtocol for Delegate {}
 
     unsafe impl SCStreamOutput for Delegate {
-        #[method(stream:didOutputSampleBuffer:ofType:)]
+        #[unsafe(method(stream:didOutputSampleBuffer:ofType:))]
         unsafe fn stream_did_output_sample_buffer(&self, _stream: &SCStream, sample_buffer: CMSampleBufferRef, of_type: SCStreamOutputType) {
             if of_type != SCStreamOutputType::Screen {
                 return;
@@ -50,27 +43,26 @@ declare_class!(
     }
 
     unsafe impl SCStreamDelegate for Delegate {
-        #[method(stream:didStopWithError:)]
+        #[unsafe(method(stream:didStopWithError:))]
         unsafe fn stream_did_stop_with_error(&self, _stream: &SCStream, error: &NSError) {
             println!("error: {:?}", error);
         }
     }
 
-    unsafe impl Delegate {
-        #[method_id(init)]
-        fn init(this: Allocated<Self>) -> Option<Id<Self>> {
+    impl Delegate {
+        #[unsafe(method_id(init))]
+        fn init(this: Allocated<Self>) -> Option<Retained<Self>> {
             let this = this.set_ivars(DelegateIvars {});
-            unsafe { msg_send_id![super(this), init] }
+            unsafe { msg_send![super(this), init] }
         }
     }
 );
 
-extern_methods!(
-    unsafe impl Delegate {
-        #[method_id(new)]
-        pub fn new() -> Id<Self>;
+impl Delegate {
+    fn new() -> Retained<Self> {
+        unsafe { msg_send![Self::alloc(), init] }
     }
-);
+}
 
 fn main() {
     let (tx, rx) = channel();
@@ -85,21 +77,21 @@ fn main() {
     }
     let shareable_content = shareable_content.unwrap();
     let displays = shareable_content.displays();
-    let display = match displays.first() {
+    let display = match displays.firstObject() {
         Some(display) => display,
         None => {
             println!("no display found");
             return;
         }
     };
-    let filter = SCContentFilter::init_with_display_exclude_windows(SCContentFilter::alloc(), display, &NSArray::new());
-    let configuration: Id<SCStreamConfiguration> = SCStreamConfiguration::new();
+    let filter = SCContentFilter::init_with_display_exclude_windows(SCContentFilter::alloc(), &display, &NSArray::new());
+    let configuration: Retained<SCStreamConfiguration> = SCStreamConfiguration::new();
     configuration.set_width(display.width() as size_t);
     configuration.set_height(display.height() as size_t);
     let delegate = Delegate::new();
     let stream_error = ProtocolObject::from_ref(&*delegate);
     let stream = SCStream::init_with_filter(SCStream::alloc(), &filter, &configuration, stream_error);
-    let queue = Queue::new("com.screen_capture.queue", QueueAttribute::Serial);
+    let queue = DispatchQueue::new("com.screen_capture.queue", DispatchQueueAttr::SERIAL);
     let output = ProtocolObject::from_ref(&*delegate);
     if let Err(ret) = stream.add_stream_output(output, SCStreamOutputType::Screen, &queue) {
         println!("error: {:?}", ret);

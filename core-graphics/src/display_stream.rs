@@ -9,9 +9,12 @@ use core_foundation::{
     runloop::{CFRunLoopSource, CFRunLoopSourceRef},
     string::{CFString, CFStringRef},
 };
-use dispatch2::{ffi::dispatch_queue_t, Queue};
+use dispatch2::{DispatchObject, DispatchQueue};
 use io_surface::{IOSurface, IOSurfaceRef};
 use libc::{c_void, size_t};
+
+#[allow(non_camel_case_types)]
+pub type dispatch_queue_t = *mut c_void;
 
 use crate::{base::CGFloat, display::CGDirectDisplayID, error::CGError, geometry::CGRect};
 
@@ -203,7 +206,7 @@ impl CGDisplayStream {
         output_height: size_t,
         pixel_format: i32,
         properties: &CFDictionary<CFString, CFType>,
-        queue: &Queue,
+        queue: &DispatchQueue,
         closure: F,
     ) -> Result<CGDisplayStream, ()>
     where
@@ -216,7 +219,7 @@ impl CGDisplayStream {
                 output_height,
                 pixel_format,
                 properties.as_concrete_TypeRef(),
-                queue.as_raw(),
+                queue.as_raw().as_ptr() as dispatch_queue_t,
                 &*Self::new_frame_available_handler(closure),
             )
         };

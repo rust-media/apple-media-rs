@@ -4,7 +4,7 @@ description = "Bindings to ScreenCaptureKit framework"
 homepage.workspace = true
 repository.workspace = true
 documentation = "https://docs.rs/screen-capture-kit"
-version = "0.5.1"
+version = "0.6.0"
 authors.workspace = true
 license.workspace = true
 categories = ["multimedia", "os::macos-apis"]
@@ -12,17 +12,16 @@ keywords = ["screencapturekit", "screencapture"]
 edition.workspace = true
 
 [dependencies]
-block2 = "0.5"
+block2 = "0.6"
 core-foundation.workspace = true
 core-graphics2 = { workspace = true, features = ["display", "objc", "window"]}
 core-media = { workspace = true, features = ["objc"] }
-dispatch2 = "0.1"
+dispatch2 = "0.3"
 libc.workspace = true
 objc2.workspace = true
-objc2-foundation = { version = "0.2", features = ["NSArray", "NSDictionary", "NSError", "NSGeometry", "NSString"] }
+objc2-foundation = { version = "0.3", features = ["NSArray", "NSDictionary", "NSError", "NSGeometry", "NSString"] }
 
 [dev-dependencies]
-core-audio-types.workspace = true
 core-video = { workspace = true, features = ["objc"] }
 
 [features]

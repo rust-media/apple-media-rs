@@ -1,9 +1,8 @@
 use core_foundation::base::TCFType;
 use core_media::format_description::{CMFormatDescription, CMFormatDescriptionRef};
 use objc2::{
-    extern_class, msg_send, msg_send_id,
-    mutability::InteriorMutable,
-    rc::{Allocated, Id},
+    extern_class, msg_send,
+    rc::{Allocated, Retained},
     ClassType,
 };
 use objc2_foundation::{NSArray, NSError, NSObject, NSObjectProtocol, NSString};
@@ -11,20 +10,16 @@ use objc2_foundation::{NSArray, NSError, NSObject, NSObjectProtocol, NSString};
 use crate::{capture_device::AVCaptureDevice, media_format::AVMediaType};
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureInput;
-
-    unsafe impl ClassType for AVCaptureInput {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureInput {}
 
 impl AVCaptureInput {
-    pub fn ports(&self) -> Id<NSArray<AVCaptureInputPort>> {
-        unsafe { msg_send_id![self, ports] }
+    pub fn ports(&self) -> Retained<NSArray<AVCaptureInputPort>> {
+        unsafe { msg_send![self, ports] }
     }
 }
 
@@ -33,20 +28,16 @@ extern "C" {
 }
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureInputPort;
-
-    unsafe impl ClassType for AVCaptureInputPort {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureInputPort {}
 
 impl AVCaptureInputPort {
-    pub fn media_type(&self) -> Id<AVMediaType> {
-        unsafe { msg_send_id![self, mediaType] }
+    pub fn media_type(&self) -> Retained<AVMediaType> {
+        unsafe { msg_send![self, mediaType] }
     }
 
     pub fn format_description(&self) -> Option<CMFormatDescription> {
@@ -70,23 +61,19 @@ impl AVCaptureInputPort {
 }
 
 extern_class!(
+    #[unsafe(super(AVCaptureInput))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureDeviceInput;
-
-    unsafe impl ClassType for AVCaptureDeviceInput {
-        type Super = AVCaptureInput;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureDeviceInput {}
 
 impl AVCaptureDeviceInput {
-    pub fn from_device(device: &AVCaptureDevice) -> Result<Id<Self>, Id<NSError>> {
-        unsafe { msg_send_id![Self::class(), deviceInputWithDevice: device, error: _] }
+    pub fn from_device(device: &AVCaptureDevice) -> Result<Retained<Self>, Retained<NSError>> {
+        unsafe { msg_send![Self::class(), deviceInputWithDevice: device, error: _] }
     }
 
-    pub fn init_with_device(this: Allocated<Self>, device: &AVCaptureDevice) -> Result<Id<Self>, Id<NSError>> {
-        unsafe { msg_send_id![this, initWithDevice: device, error: _] }
+    pub fn init_with_device(this: Allocated<Self>, device: &AVCaptureDevice) -> Result<Retained<Self>, Retained<NSError>> {
+        unsafe { msg_send![this, initWithDevice: device, error: _] }
     }
 }

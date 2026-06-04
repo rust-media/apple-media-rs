@@ -4,7 +4,7 @@ description = "Safe bindings to CoreGraphics framework, including display stream
 homepage.workspace = true
 repository.workspace = true
 documentation = "https://docs.rs/core-graphics2"
-version = "0.5.2"
+version = "0.6.0"
 authors.workspace = true
 license.workspace = true
 categories = ["graphics", "multimedia", "os::macos-apis"]
@@ -16,7 +16,7 @@ bitflags.workspace = true
 block = "0.1"
 cfg-if.workspace = true
 core-foundation.workspace = true
-dispatch2 = { version = "0.1", optional = true }
+dispatch2 = { version = "0.3", optional = true }
 io-surface = { version = "0.16", optional = true }
 libc.workspace = true
 metal = { version = "0.33", optional = true }

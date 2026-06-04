@@ -11,7 +11,7 @@ use core_graphics2::{
     display_stream::*,
 };
 use core_video::pixel_buffer::{self, CVPixelBuffer};
-use dispatch2::{Queue, QueueAttribute};
+use dispatch2::{DispatchQueue, DispatchQueueAttr};
 use io_surface::IOSurface;
 
 fn main() {
@@ -48,7 +48,7 @@ fn main() {
             }
             _ => {}
         };
-    let queue = Queue::new("com.screen_capture.queue", QueueAttribute::Serial);
+    let queue = DispatchQueue::new("com.screen_capture.queue", DispatchQueueAttr::SERIAL);
     if let Ok(display_stream) = CGDisplayStream::new_with_dispatch_queue(
         display.id,
         output_width,
