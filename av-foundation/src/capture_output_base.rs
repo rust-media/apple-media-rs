@@ -1,27 +1,23 @@
-use objc2::{extern_class, msg_send_id, mutability::InteriorMutable, rc::Id, ClassType};
+use objc2::{extern_class, msg_send, rc::Retained};
 use objc2_foundation::{NSArray, NSInteger, NSObject, NSObjectProtocol, NSString};
 
 use crate::capture_session::AVCaptureConnection;
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureOutput;
-
-    unsafe impl ClassType for AVCaptureOutput {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureOutput {}
 
 impl AVCaptureOutput {
-    pub fn connections(&self) -> Id<NSArray<AVCaptureConnection>> {
-        unsafe { msg_send_id![self, connections] }
+    pub fn connections(&self) -> Retained<NSArray<AVCaptureConnection>> {
+        unsafe { msg_send![self, connections] }
     }
 
-    pub fn connection_with_media_type(&self, media_type: &NSString) -> Option<Id<AVCaptureConnection>> {
-        unsafe { msg_send_id![self, connectionWithMediaType: media_type] }
+    pub fn connection_with_media_type(&self, media_type: &NSString) -> Option<Retained<AVCaptureConnection>> {
+        unsafe { msg_send![self, connectionWithMediaType: media_type] }
     }
 }
 

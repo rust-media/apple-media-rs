@@ -12,35 +12,28 @@ use av_foundation::{
 use core_foundation::base::TCFType;
 use core_media::sample_buffer::{CMSampleBuffer, CMSampleBufferRef};
 use core_video::pixel_buffer::CVPixelBuffer;
-use dispatch2::Queue;
+use dispatch2::{DispatchQueue, DispatchQueueAttr};
 use objc2::{
-    declare_class, extern_methods, msg_send_id, mutability,
-    rc::{Allocated, Id},
+    define_class, msg_send,
+    rc::{Allocated, Retained},
     runtime::ProtocolObject,
-    ClassType, DeclaredClass,
+    AnyThread,
 };
 use objc2_foundation::{NSMutableArray, NSObject, NSObjectProtocol};
 use os_ver::if_greater_than;
 
 pub struct DelegateIvars {}
 
-declare_class!(
+define_class!(
+    #[unsafe(super(NSObject))]
+    #[name = "OutputSampleBufferDelegate"]
+    #[ivars = DelegateIvars]
     struct Delegate;
-
-    unsafe impl ClassType for Delegate {
-        type Super = NSObject;
-        type Mutability = mutability::Mutable;
-        const NAME: &'static str = "OutputSampleBufferDelegate";
-    }
-
-    impl DeclaredClass for Delegate {
-        type Ivars = DelegateIvars;
-    }
 
     unsafe impl NSObjectProtocol for Delegate {}
 
     unsafe impl AVCaptureVideoDataOutputSampleBufferDelegate for Delegate {
-        #[method(captureOutput:didOutputSampleBuffer:fromConnection:)]
+        #[unsafe(method(captureOutput:didOutputSampleBuffer:fromConnection:))]
         unsafe fn capture_output_did_output_sample_buffer(
             &self,
             _capture_output: &AVCaptureOutput,
@@ -56,27 +49,26 @@ declare_class!(
         }
     }
 
-    unsafe impl Delegate {
-        #[method_id(init)]
-        fn init(this: Allocated<Self>) -> Option<Id<Self>> {
+    impl Delegate {
+        #[unsafe(method_id(init))]
+        fn init(this: Allocated<Self>) -> Option<Retained<Self>> {
             let this = this.set_ivars(DelegateIvars {});
-            unsafe { msg_send_id![super(this), init] }
+            unsafe { msg_send![super(this), init] }
         }
     }
 );
 
-extern_methods!(
-    unsafe impl Delegate {
-        #[method_id(new)]
-        pub fn new() -> Id<Self>;
+impl Delegate {
+    fn new() -> Retained<Self> {
+        unsafe { msg_send![Self::alloc(), init] }
     }
-);
+}
 
 fn main() {
     let devices = unsafe {
         if cfg!(target_os = "macos") {
             if_greater_than! {(10, 15) => {
-                let mut device_types = NSMutableArray::new();
+                let device_types = NSMutableArray::new();
 
                 device_types.addObject(AVCaptureDeviceTypeBuiltInWideAngleCamera);
                 if_greater_than!{(14) => {
@@ -96,7 +88,7 @@ fn main() {
             }}
         } else if cfg!(target_os = "ios") {
             if_greater_than! {(10) => {
-                let mut device_types = NSMutableArray::new();
+                let device_types = NSMutableArray::new();
 
                 device_types.addObject(AVCaptureDeviceTypeBuiltInWideAngleCamera);
 
@@ -124,7 +116,7 @@ fn main() {
         println!("position: {:?}", device.position());
     }
 
-    let device = match devices.first() {
+    let device = match devices.firstObject() {
         Some(device) => device,
         None => {
             println!("No video capture device found");
@@ -133,11 +125,11 @@ fn main() {
     };
 
     let session = AVCaptureSession::new();
-    let input = AVCaptureDeviceInput::from_device(device).unwrap();
+    let input = AVCaptureDeviceInput::from_device(&device).unwrap();
     let output = AVCaptureVideoDataOutput::new();
     let delegate = Delegate::new();
     let delegate = ProtocolObject::from_ref(&*delegate);
-    let queue = Queue::new("com.video_capture.queue", dispatch2::QueueAttribute::Serial);
+    let queue = DispatchQueue::new("com.video_capture.queue", DispatchQueueAttr::SERIAL);
 
     output.set_sample_buffer_delegate(delegate, &queue);
     output.set_always_discards_late_video_frames(true);

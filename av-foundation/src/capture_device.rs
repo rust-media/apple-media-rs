@@ -10,7 +10,7 @@ use objc2::{
     encode::{Encode, Encoding, RefEncode},
     Encoding::Float,
 };
-use objc2::{extern_class, msg_send, msg_send_id, mutability::InteriorMutable, rc::Id, runtime::Bool, ClassType};
+use objc2::{extern_class, msg_send, rc::Retained, runtime::Bool, ClassType};
 use objc2_foundation::{NSArray, NSError, NSInteger, NSNumber, NSObject, NSObjectProtocol, NSString};
 
 use crate::{capture_session_preset::AVCaptureSessionPreset, media_format::AVMediaType};
@@ -22,48 +22,44 @@ extern "C" {
 }
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureDevice;
-
-    unsafe impl ClassType for AVCaptureDevice {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureDevice {}
 
 impl AVCaptureDevice {
-    pub fn devices() -> Id<NSArray<AVCaptureDevice>> {
-        unsafe { msg_send_id![AVCaptureDevice::class(), devices] }
+    pub fn devices() -> Retained<NSArray<AVCaptureDevice>> {
+        unsafe { msg_send![AVCaptureDevice::class(), devices] }
     }
 
-    pub fn devices_with_media_type(media_type: &AVMediaType) -> Id<NSArray<AVCaptureDevice>> {
-        unsafe { msg_send_id![AVCaptureDevice::class(), devicesWithMediaType: media_type] }
+    pub fn devices_with_media_type(media_type: &AVMediaType) -> Retained<NSArray<AVCaptureDevice>> {
+        unsafe { msg_send![AVCaptureDevice::class(), devicesWithMediaType: media_type] }
     }
 
-    pub fn default_device_with_media_type(media_type: &AVMediaType) -> Option<Id<AVCaptureDevice>> {
-        unsafe { msg_send_id![AVCaptureDevice::class(), defaultDeviceWithMediaType: media_type] }
+    pub fn default_device_with_media_type(media_type: &AVMediaType) -> Option<Retained<AVCaptureDevice>> {
+        unsafe { msg_send![AVCaptureDevice::class(), defaultDeviceWithMediaType: media_type] }
     }
 
-    pub fn device_with_unique_id(unique_id: &NSString) -> Option<Id<AVCaptureDevice>> {
-        unsafe { msg_send_id![AVCaptureDevice::class(), deviceWithUniqueID: unique_id] }
+    pub fn device_with_unique_id(unique_id: &NSString) -> Option<Retained<AVCaptureDevice>> {
+        unsafe { msg_send![AVCaptureDevice::class(), deviceWithUniqueID: unique_id] }
     }
 
-    pub fn unique_id(&self) -> Id<NSString> {
-        unsafe { msg_send_id![self, uniqueID] }
+    pub fn unique_id(&self) -> Retained<NSString> {
+        unsafe { msg_send![self, uniqueID] }
     }
 
-    pub fn model_id(&self) -> Id<NSString> {
-        unsafe { msg_send_id![self, modelID] }
+    pub fn model_id(&self) -> Retained<NSString> {
+        unsafe { msg_send![self, modelID] }
     }
 
-    pub fn localized_name(&self) -> Id<NSString> {
-        unsafe { msg_send_id![self, localizedName] }
+    pub fn localized_name(&self) -> Retained<NSString> {
+        unsafe { msg_send![self, localizedName] }
     }
 
-    pub fn manufacturer(&self) -> Id<NSString> {
-        unsafe { msg_send_id![self, manufacturer] }
+    pub fn manufacturer(&self) -> Retained<NSString> {
+        unsafe { msg_send![self, manufacturer] }
     }
 
     #[cfg(target_os = "macos")]
@@ -75,13 +71,13 @@ impl AVCaptureDevice {
         unsafe { msg_send![self, hasMediaType: media_type] }
     }
 
-    pub fn lock_for_configuration(&self) -> Result<Bool, Id<NSError>> {
+    pub fn lock_for_configuration(&self) -> Result<Bool, Retained<NSError>> {
         let mut error: *mut NSError = std::ptr::null_mut();
         let result: Bool = unsafe { msg_send![self, lockForConfiguration: &mut error] };
         if result.is_true() {
             Ok(result)
         } else {
-            Err(unsafe { Id::retain(error).unwrap() })
+            Err(unsafe { Retained::retain(error).unwrap() })
         }
     }
 
@@ -107,16 +103,16 @@ impl AVCaptureDevice {
     }
 
     #[cfg(target_os = "macos")]
-    pub fn linked_devices(&self) -> Id<NSArray<AVCaptureDevice>> {
-        unsafe { msg_send_id![self, linkedDevices] }
+    pub fn linked_devices(&self) -> Retained<NSArray<AVCaptureDevice>> {
+        unsafe { msg_send![self, linkedDevices] }
     }
 
-    pub fn formats(&self) -> Id<NSArray<AVCaptureDeviceFormat>> {
-        unsafe { msg_send_id![self, formats] }
+    pub fn formats(&self) -> Retained<NSArray<AVCaptureDeviceFormat>> {
+        unsafe { msg_send![self, formats] }
     }
 
-    pub fn get_active_format(&self) -> Id<AVCaptureDeviceFormat> {
-        unsafe { msg_send_id![self, activeFormat] }
+    pub fn get_active_format(&self) -> Retained<AVCaptureDeviceFormat> {
+        unsafe { msg_send![self, activeFormat] }
     }
 
     pub fn set_active_format(&self, format: &AVCaptureDeviceFormat) {
@@ -139,12 +135,12 @@ impl AVCaptureDevice {
         unsafe { msg_send![self, setActiveVideoMaxFrameDuration: duration] }
     }
 
-    pub fn input_sources(&self) -> Id<NSArray<AVCaptureDeviceInputSource>> {
-        unsafe { msg_send_id![self, inputSources] }
+    pub fn input_sources(&self) -> Retained<NSArray<AVCaptureDeviceInputSource>> {
+        unsafe { msg_send![self, inputSources] }
     }
 
-    pub fn get_active_input_source(&self) -> Id<AVCaptureDeviceInputSource> {
-        unsafe { msg_send_id![self, activeInputSource] }
+    pub fn get_active_input_source(&self) -> Retained<AVCaptureDeviceInputSource> {
+        unsafe { msg_send![self, activeInputSource] }
     }
 
     pub fn set_active_input_source(&self, input_source: &AVCaptureDeviceInputSource) {
@@ -196,16 +192,16 @@ extern "C" {
 }
 
 impl AVCaptureDevice {
-    pub fn device_type(&self) -> Id<AVCaptureDeviceType> {
-        unsafe { msg_send_id![self, deviceType] }
+    pub fn device_type(&self) -> Retained<AVCaptureDeviceType> {
+        unsafe { msg_send![self, deviceType] }
     }
 
     pub fn default_device_with_device_type(
         device_type: &AVCaptureDeviceType,
         media_type: &AVMediaType,
         position: AVCaptureDevicePosition,
-    ) -> Option<Id<AVCaptureDevice>> {
-        unsafe { msg_send_id![AVCaptureDevice::class(), defaultDeviceWithDeviceType: device_type mediaType: media_type position: position] }
+    ) -> Option<Retained<AVCaptureDevice>> {
+        unsafe { msg_send![AVCaptureDevice::class(), defaultDeviceWithDeviceType: device_type, mediaType: media_type, position: position] }
     }
 }
 
@@ -286,13 +282,13 @@ impl AVCaptureDevice {
         unsafe { msg_send![self, setTorchMode: torch_mode] }
     }
 
-    pub fn set_torch_mode_on_with_level(&self, torch_level: f32) -> Result<Bool, Id<NSError>> {
+    pub fn set_torch_mode_on_with_level(&self, torch_level: f32) -> Result<Bool, Retained<NSError>> {
         let mut error: *mut NSError = std::ptr::null_mut();
-        let result: Bool = unsafe { msg_send![self, setTorchModeOnWithLevel: torch_level error: &mut error] };
+        let result: Bool = unsafe { msg_send![self, setTorchModeOnWithLevel: torch_level, error: &mut error] };
         if result.is_true() {
             Ok(result)
         } else {
-            Err(unsafe { Id::retain(error).unwrap() })
+            Err(unsafe { Retained::retain(error).unwrap() })
         }
     }
 }
@@ -692,7 +688,7 @@ impl AVCaptureDevice {
 
     #[cfg(target_os = "ios")]
     pub fn ramp_to_video_zoom_factor(&self, factor: CGFloat, rate: f32) {
-        unsafe { msg_send![self, rampToVideoZoomFactor: factor withRate: rate] }
+        unsafe { msg_send![self, rampToVideoZoomFactor: factor, withRate: rate] }
     }
 
     #[cfg(target_os = "ios")]
@@ -738,7 +734,7 @@ impl AVCaptureDevice {
     where
         F: Fn(Bool) + 'static,
     {
-        unsafe { msg_send![AVCaptureDevice::class(), requestAccessForMediaType: media_type completionHandler: &*RcBlock::new(handler)] }
+        unsafe { msg_send![AVCaptureDevice::class(), requestAccessForMediaType: media_type, completionHandler: &*RcBlock::new(handler)] }
     }
 }
 
@@ -769,13 +765,9 @@ impl AVCaptureDevice {
 }
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureDeviceDiscoverySession;
-
-    unsafe impl ClassType for AVCaptureDeviceDiscoverySession {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureDeviceDiscoverySession {}
@@ -785,25 +777,21 @@ impl AVCaptureDeviceDiscoverySession {
         device_types: &NSArray<AVCaptureDeviceType>,
         media_type: &AVMediaType,
         position: AVCaptureDevicePosition,
-    ) -> Id<AVCaptureDeviceDiscoverySession> {
+    ) -> Retained<AVCaptureDeviceDiscoverySession> {
         unsafe {
-            msg_send_id![AVCaptureDeviceDiscoverySession::class(), discoverySessionWithDeviceTypes: device_types mediaType: media_type position: position]
+            msg_send![AVCaptureDeviceDiscoverySession::class(), discoverySessionWithDeviceTypes: device_types, mediaType: media_type, position: position]
         }
     }
 
-    pub fn devices(&self) -> Id<NSArray<AVCaptureDevice>> {
-        unsafe { msg_send_id![self, devices] }
+    pub fn devices(&self) -> Retained<NSArray<AVCaptureDevice>> {
+        unsafe { msg_send![self, devices] }
     }
 }
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVFrameRateRange;
-
-    unsafe impl ClassType for AVFrameRateRange {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVFrameRateRange {}
@@ -849,20 +837,16 @@ pub const AVCaptureAutoFocusSystemContrastDetection: AVCaptureAutoFocusSystem = 
 pub const AVCaptureAutoFocusSystemPhaseDetection: AVCaptureAutoFocusSystem = 2;
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureDeviceFormat;
-
-    unsafe impl ClassType for AVCaptureDeviceFormat {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureDeviceFormat {}
 
 impl AVCaptureDeviceFormat {
-    pub fn media_type(&self) -> Id<AVMediaType> {
-        unsafe { msg_send_id![self, mediaType] }
+    pub fn media_type(&self) -> Retained<AVMediaType> {
+        unsafe { msg_send![self, mediaType] }
     }
 
     pub fn format_description(&self) -> CMFormatDescription {
@@ -872,8 +856,8 @@ impl AVCaptureDeviceFormat {
         }
     }
 
-    pub fn video_supported_frame_rate_ranges(&self) -> Id<NSArray<AVFrameRateRange>> {
-        unsafe { msg_send_id![self, videoSupportedFrameRateRanges] }
+    pub fn video_supported_frame_rate_ranges(&self) -> Retained<NSArray<AVFrameRateRange>> {
+        unsafe { msg_send![self, videoSupportedFrameRateRanges] }
     }
 
     pub fn video_field_of_view(&self) -> f32 {
@@ -937,33 +921,29 @@ impl AVCaptureDeviceFormat {
         unsafe { msg_send![self, autoFocusSystem] }
     }
 
-    pub fn supported_color_spaces(&self) -> Id<NSArray<NSNumber>> {
-        unsafe { msg_send_id![self, supportedColorSpaces] }
+    pub fn supported_color_spaces(&self) -> Retained<NSArray<NSNumber>> {
+        unsafe { msg_send![self, supportedColorSpaces] }
     }
 
-    pub fn supported_depth_data_formats(&self) -> Id<NSArray<AVCaptureDeviceFormat>> {
-        unsafe { msg_send_id![self, supportedDepthDataFormats] }
+    pub fn supported_depth_data_formats(&self) -> Retained<NSArray<AVCaptureDeviceFormat>> {
+        unsafe { msg_send![self, supportedDepthDataFormats] }
     }
 }
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureDeviceInputSource;
-
-    unsafe impl ClassType for AVCaptureDeviceInputSource {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureDeviceInputSource {}
 
 impl AVCaptureDeviceInputSource {
-    pub fn input_source_id(&self) -> Id<NSString> {
-        unsafe { msg_send_id![self, inputSourceID] }
+    pub fn input_source_id(&self) -> Retained<NSString> {
+        unsafe { msg_send![self, inputSourceID] }
     }
 
-    pub fn localized_name(&self) -> Id<NSString> {
-        unsafe { msg_send_id![self, localizedName] }
+    pub fn localized_name(&self) -> Retained<NSString> {
+        unsafe { msg_send![self, localizedName] }
     }
 }

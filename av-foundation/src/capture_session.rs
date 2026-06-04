@@ -1,4 +1,4 @@
-use objc2::{extern_class, msg_send, msg_send_id, mutability::InteriorMutable, rc::Id, ClassType};
+use objc2::{extern_class, msg_send, rc::Retained, ClassType};
 use objc2_foundation::{NSArray, NSInteger, NSObject, NSObjectProtocol, NSString};
 
 use crate::{capture_input::AVCaptureInput, capture_output_base::AVCaptureOutput, capture_session_preset::AVCaptureSessionPreset};
@@ -30,35 +30,31 @@ pub const AVCaptureVideoOrientationLandscapeRight: AVCaptureVideoOrientation = 3
 pub const AVCaptureVideoOrientationLandscapeLeft: AVCaptureVideoOrientation = 4;
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureSession;
-
-    unsafe impl ClassType for AVCaptureSession {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureSession {}
 
 impl AVCaptureSession {
-    pub fn new() -> Id<Self> {
-        unsafe { msg_send_id![AVCaptureSession::class(), new] }
+    pub fn new() -> Retained<Self> {
+        unsafe { msg_send![AVCaptureSession::class(), new] }
     }
     pub fn can_set_session_preset(&self, preset: &AVCaptureSessionPreset) -> bool {
         unsafe { msg_send![self, canSetSessionPreset: preset] }
     }
 
-    pub fn get_session_preset(&self) -> Id<AVCaptureSessionPreset> {
-        unsafe { msg_send_id![self, sessionPreset] }
+    pub fn get_session_preset(&self) -> Retained<AVCaptureSessionPreset> {
+        unsafe { msg_send![self, sessionPreset] }
     }
 
     pub fn set_session_preset(&self, preset: &AVCaptureSessionPreset) {
         unsafe { msg_send![self, setSessionPreset: preset] }
     }
 
-    pub fn inputs(&self) -> Id<NSArray<AVCaptureInput>> {
-        unsafe { msg_send_id![self, inputs] }
+    pub fn inputs(&self) -> Retained<NSArray<AVCaptureInput>> {
+        unsafe { msg_send![self, inputs] }
     }
 
     pub fn can_add_input(&self, input: &AVCaptureInput) -> bool {
@@ -73,8 +69,8 @@ impl AVCaptureSession {
         unsafe { msg_send![self, removeInput: input] }
     }
 
-    pub fn outputs(&self) -> Id<NSArray<AVCaptureOutput>> {
-        unsafe { msg_send_id![self, outputs] }
+    pub fn outputs(&self) -> Retained<NSArray<AVCaptureOutput>> {
+        unsafe { msg_send![self, outputs] }
     }
 
     pub fn can_add_output(&self, output: &AVCaptureOutput) -> bool {
@@ -97,8 +93,8 @@ impl AVCaptureSession {
         unsafe { msg_send![self, addOutputWithNoConnections: output] }
     }
 
-    pub fn connections(&self) -> Id<NSArray<AVCaptureConnection>> {
-        unsafe { msg_send_id![self, connections] }
+    pub fn connections(&self) -> Retained<NSArray<AVCaptureConnection>> {
+        unsafe { msg_send![self, connections] }
     }
 
     pub fn can_add_connection(&self, connection: &AVCaptureConnection) -> bool {
@@ -155,13 +151,9 @@ impl AVCaptureSession {
 }
 
 extern_class!(
+    #[unsafe(super(NSObject))]
     #[derive(Debug, PartialEq, Eq, Hash)]
     pub struct AVCaptureConnection;
-
-    unsafe impl ClassType for AVCaptureConnection {
-        type Super = NSObject;
-        type Mutability = InteriorMutable;
-    }
 );
 
 unsafe impl NSObjectProtocol for AVCaptureConnection {}
