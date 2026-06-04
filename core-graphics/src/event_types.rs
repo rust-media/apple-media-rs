@@ -279,20 +279,15 @@ pub enum CGEventMouseSubtype {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Default)]
 pub enum CGEventTapLocation {
     #[doc(alias = "kCGHIDEventTap")]
+    #[default]
     HIDEventTap              = 0,
     #[doc(alias = "kCGSessionEventTap")]
     SessionEventTap          = 1,
     #[doc(alias = "kCGAnnotatedSessionEventTap")]
     AnnotatedSessionEventTap = 2,
-}
-
-impl Default for CGEventTapLocation {
-    fn default() -> Self {
-        CGEventTapLocation::HIDEventTap
-    }
 }
 
 #[repr(u32)]
@@ -316,18 +311,13 @@ pub type CGEventTapProxy = *const __CGEventTapProxy;
 pub type CGEventTapCallBack = extern "C" fn(proxy: CGEventTapProxy, type_: CGEventType, event: CGEventRef, userInfo: *mut c_void) -> CGEventRef;
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Default)]
 pub enum CGEventTapOptions {
     #[doc(alias = "kCGEventTapOptionDefault")]
+    #[default]
     Default    = 0,
     #[doc(alias = "kCGEventTapOptionListenOnly")]
     ListenOnly = 1,
-}
-
-impl Default for CGEventTapOptions {
-    fn default() -> Self {
-        CGEventTapOptions::Default
-    }
 }
 
 #[repr(C)]

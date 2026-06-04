@@ -42,7 +42,7 @@ impl CMSimpleQueue {
     }
 
     #[inline]
-    pub fn enqueue(&self, element: *const c_void) -> Result<(), OSStatus> {
+    pub unsafe fn enqueue(&self, element: *const c_void) -> Result<(), OSStatus> {
         let status = unsafe { CMSimpleQueueEnqueue(self.as_concrete_TypeRef(), element) };
         status_to_result(status)
     }

@@ -1,4 +1,4 @@
-#![allow(non_snake_case, non_camel_case_types, non_upper_case_globals, improper_ctypes)]
+#![allow(clippy::missing_safety_doc, non_snake_case, non_camel_case_types, non_upper_case_globals, improper_ctypes)]
 
 extern crate core_graphics2 as core_graphics;
 

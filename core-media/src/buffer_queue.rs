@@ -453,7 +453,7 @@ impl CMBufferQueue {
     }
 
     #[inline]
-    pub fn remove_trigger(&self, token: CMBufferQueueTriggerToken) -> Result<(), OSStatus> {
+    pub unsafe fn remove_trigger(&self, token: CMBufferQueueTriggerToken) -> Result<(), OSStatus> {
         unsafe {
             let status = CMBufferQueueRemoveTrigger(self.as_concrete_TypeRef(), token);
             status_to_result(status)
@@ -461,7 +461,7 @@ impl CMBufferQueue {
     }
 
     #[inline]
-    pub fn test_trigger(&self, token: CMBufferQueueTriggerToken) -> bool {
+    pub unsafe fn test_trigger(&self, token: CMBufferQueueTriggerToken) -> bool {
         unsafe { CMBufferQueueTestTrigger(self.as_concrete_TypeRef(), token) != 0 }
     }
 

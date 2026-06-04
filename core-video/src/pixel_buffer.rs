@@ -22,7 +22,7 @@ pub type CVPixelBufferRef = CVImageBufferRef;
 
 #[inline]
 const fn fourcc(code: &[u8; 4]) -> u32 {
-    ((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | ((code[3] as u32) << 0)
+    ((code[0] as u32) << 24) | ((code[1] as u32) << 16) | ((code[2] as u32) << 8) | (code[3] as u32)
 }
 
 pub type CVPixelBufferLockFlags = u64;
@@ -324,10 +324,10 @@ extern "C" {
     pub fn CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer: CVPixelBufferRef, planeIndex: size_t) -> size_t;
     pub fn CVPixelBufferGetExtendedPixels(
         pixelBuffer: CVPixelBufferRef,
-        extraColumnsOnLeft: *const size_t,
-        extraColumnsOnRight: *const size_t,
-        extraRowsOnTop: *const size_t,
-        extraRowsOnBottom: *const size_t,
+        extraColumnsOnLeft: *mut size_t,
+        extraColumnsOnRight: *mut size_t,
+        extraRowsOnTop: *mut size_t,
+        extraRowsOnBottom: *mut size_t,
     );
     pub fn CVPixelBufferFillExtendedPixels(pixelBuffer: CVPixelBufferRef) -> CVReturn;
     pub fn CVPixelBufferCopyCreationAttributes(pixelBuffer: CVPixelBufferRef) -> CFDictionaryRef;

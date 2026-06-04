@@ -182,7 +182,7 @@ impl CVDisplayLink {
                     let in_now = unsafe { &*in_now };
                     let in_output_time = unsafe { &*in_output_time };
                     let flags_out = unsafe { &mut *flags_out };
-                    closure(&display_link, &in_now, &in_output_time, flags_in, flags_out)
+                    closure(&display_link, in_now, in_output_time, flags_in, flags_out)
                 },
             )
             .copy()

@@ -110,7 +110,7 @@ extern "C" {
     pub fn CGConfigureDisplayMode(config: CGDisplayConfigRef, display: CGDirectDisplayID, mode: CFDictionaryRef) -> CGError;
 }
 
-pub fn begin_configuration() -> Result<CGDisplayConfigRef, CGError> {
+pub unsafe fn begin_configuration() -> Result<CGDisplayConfigRef, CGError> {
     let mut config: CGDisplayConfigRef = null_mut();
     let result = unsafe { CGBeginDisplayConfiguration(&mut config) };
     if result == CGError::Success {
@@ -120,7 +120,7 @@ pub fn begin_configuration() -> Result<CGDisplayConfigRef, CGError> {
     }
 }
 
-pub fn configure_display_origin(config: &CGDisplayConfigRef, display: CGDirectDisplayID, x: i32, y: i32) -> Result<(), CGError> {
+pub unsafe fn configure_display_origin(config: &CGDisplayConfigRef, display: CGDirectDisplayID, x: i32, y: i32) -> Result<(), CGError> {
     let result = unsafe { CGConfigureDisplayOrigin(*config, display, x, y) };
     if result == CGError::Success {
         Ok(())
@@ -129,7 +129,7 @@ pub fn configure_display_origin(config: &CGDisplayConfigRef, display: CGDirectDi
     }
 }
 
-pub fn configure_display_with_display_mode(
+pub unsafe fn configure_display_with_display_mode(
     config: &CGDisplayConfigRef,
     display: CGDirectDisplayID,
     mode: CGDisplayModeRef,
@@ -143,7 +143,7 @@ pub fn configure_display_with_display_mode(
     }
 }
 
-pub fn configure_display_stereo_operation(
+pub unsafe fn configure_display_stereo_operation(
     config: &CGDisplayConfigRef,
     display: CGDirectDisplayID,
     stereo: bool,
@@ -157,7 +157,7 @@ pub fn configure_display_stereo_operation(
     }
 }
 
-pub fn configure_display_mirror_of_display(
+pub unsafe fn configure_display_mirror_of_display(
     config: &CGDisplayConfigRef,
     display: CGDirectDisplayID,
     master: CGDirectDisplayID,
@@ -170,7 +170,7 @@ pub fn configure_display_mirror_of_display(
     }
 }
 
-pub fn cancel_display_configuration(config: &CGDisplayConfigRef) -> Result<(), CGError> {
+pub unsafe fn cancel_display_configuration(config: &CGDisplayConfigRef) -> Result<(), CGError> {
     let result = unsafe { CGCancelDisplayConfiguration(*config) };
     if result == CGError::Success {
         Ok(())
@@ -179,7 +179,7 @@ pub fn cancel_display_configuration(config: &CGDisplayConfigRef) -> Result<(), C
     }
 }
 
-pub fn complete_display_configuration(config: &CGDisplayConfigRef, options: CGConfigureOption) -> Result<(), CGError> {
+pub unsafe fn complete_display_configuration(config: &CGDisplayConfigRef, options: CGConfigureOption) -> Result<(), CGError> {
     let result = unsafe { CGCompleteDisplayConfiguration(*config, options) };
     if result == CGError::Success {
         Ok(())

@@ -397,6 +397,12 @@ impl CGPath {
     }
 }
 
+impl Default for CGMutablePath {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CGMutablePath {
     pub fn new() -> CGMutablePath {
         unsafe { TCFType::wrap_under_create_rule(CGPathCreateMutable()) }

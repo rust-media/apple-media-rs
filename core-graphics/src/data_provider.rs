@@ -101,7 +101,7 @@ impl CGDataProvider {
             let info = Arc::into_raw(buffer) as *mut c_void;
             let data_provider = CGDataProviderCreateWithData(info, ptr, len, Some(release::<T>));
             if data_provider.is_null() {
-                drop(Arc::from_raw(info));
+                drop(Arc::from_raw(info as *mut T));
                 return None;
             } else {
                 return Some(TCFType::wrap_under_create_rule(data_provider));
