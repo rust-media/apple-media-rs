@@ -8,6 +8,7 @@ members = [
     "core-graphics",
     "core-media",
     "core-video",
+    "examples",
     "screen-capture-kit",
     "video-toolbox",
 ]
@@ -24,6 +25,7 @@ core-audio-types = { version = "0.3.0", default-features = false, path = "core-a
 core-graphics2 = { version = "0.6.0", default-features = false, path = "core-graphics" }
 core-media = { version = "0.8.0", default-features = false, path = "core-media" }
 core-video = { version = "0.6.0", default-features = false, path = "core-video" }
+dispatch2 = "0.3"
 bitflags = "2.5"
 cfg-if = "1.0"
 core-foundation = { version = "0.10", default-features = false }

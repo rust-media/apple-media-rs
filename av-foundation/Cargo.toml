@@ -17,13 +17,10 @@ core-foundation.workspace = true
 core-graphics2 = { workspace = true, features = ["objc"] }
 core-media = { workspace = true, features = ["objc"] }
 core-video = { workspace = true, features = ["objc"] }
-dispatch2 = "0.3"
+dispatch2.workspace = true
 libc.workspace = true
 objc2.workspace = true
 objc2-foundation = { version = "0.3", features = ["NSArray", "NSDictionary", "NSEnumerator", "NSError", "NSRange", "NSString", "NSValue"] }
-
-[dev-dependencies]
-os-ver = "0.2"
 
 [features]
 default = ["capture", "link"]
@@ -32,9 +29,6 @@ capture = []
 editing = []
 link = ["core-foundation/link", "core-media/link", "core-video/link"]
 playback = []
-
-[[example]]
-name = "video_capture"
 
 [package.metadata.docs.rs]
 no-default-features = true

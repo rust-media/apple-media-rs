@@ -16,15 +16,12 @@ bitflags.workspace = true
 block = "0.1"
 cfg-if.workspace = true
 core-foundation.workspace = true
-dispatch2 = { version = "0.3", optional = true }
+dispatch2 = { workspace = true, optional = true }
 libc.workspace = true
 metal = { version = "0.33", optional = true }
 objc2 = { workspace = true, optional = true }
 objc2-core-foundation = { workspace = true, optional = true }
 objc2-io-surface = { workspace = true, optional = true }
-
-[dev-dependencies]
-core-video = { workspace = true, features = ["link"] }
 
 [features]
 default = ["display", "display-stream", "event", "link", "window"]
@@ -34,9 +31,6 @@ event = []
 link = ["core-foundation/link"]
 objc = ["dep:objc2"]
 window = []
-
-[[example]]
-name = "display_stream"
 
 [package.metadata.docs.rs]
 no-default-features = true

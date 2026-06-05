@@ -1,0 +1,31 @@
+[package]
+name = "examples"
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+av-foundation = { path = "../av-foundation" }
+core-foundation.workspace = true
+core-graphics2 = { workspace = true, features = ["display-stream", "link"] }
+core-media = { workspace = true, features = ["objc"] }
+core-video = { workspace = true, features = ["link", "objc"] }
+dispatch2.workspace = true
+libc.workspace = true
+objc2.workspace = true
+objc2-core-foundation.workspace = true
+objc2-foundation = { version = "0.3", features = ["NSArray", "NSError", "NSObject", "NSString"] }
+objc2-io-surface.workspace = true
+os-ver = "0.2"
+screen-capture-kit = { path = "../screen-capture-kit" }
+
+[[example]]
+name = "display_stream"
+
+[[example]]
+name = "screen_capture"
+
+[[example]]
+name = "video_capture"

@@ -16,20 +16,14 @@ block2 = "0.6"
 core-foundation.workspace = true
 core-graphics2 = { workspace = true, features = ["display", "objc", "window"]}
 core-media = { workspace = true, features = ["objc"] }
-dispatch2 = "0.3"
+dispatch2.workspace = true
 libc.workspace = true
 objc2.workspace = true
 objc2-foundation = { version = "0.3", features = ["NSArray", "NSDictionary", "NSError", "NSGeometry", "NSString"] }
 
-[dev-dependencies]
-core-video = { workspace = true, features = ["objc"] }
-
 [features]
 default = ["link"]
 link = ["core-foundation/link", "core-graphics2/link", "core-media/link"]
-
-[[example]]
-name = "screen_capture"
 
 [package.metadata.docs.rs]
 no-default-features = true
