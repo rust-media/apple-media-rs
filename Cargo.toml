@@ -31,3 +31,5 @@ cfg-if = "1.0"
 core-foundation = { version = "0.10", default-features = false }
 libc = "0.2"
 objc2 = "0.6"
+objc2-core-foundation = { version = "0.3", default-features = false }
+objc2-io-surface = { version = "0.3", default-features = false, features = ["IOSurfaceRef", "objc2-core-foundation"] }
