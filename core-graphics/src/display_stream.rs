@@ -1,4 +1,4 @@
-use std::slice::from_raw_parts;
+use std::{ptr::NonNull, slice::from_raw_parts};
 
 use block::{Block, ConcreteBlock, RcBlock};
 use core_foundation::{
@@ -10,8 +10,9 @@ use core_foundation::{
     string::{CFString, CFStringRef},
 };
 use dispatch2::{DispatchObject, DispatchQueue};
-use io_surface::{IOSurface, IOSurfaceRef};
 use libc::{c_void, size_t};
+use objc2_core_foundation::CFRetained;
+use objc2_io_surface::IOSurfaceRef;
 
 #[allow(non_camel_case_types)]
 pub type dispatch_queue_t = *mut c_void;
@@ -54,7 +55,7 @@ pub enum CGDisplayStreamFrameStatus {
     Stopped       = 3,
 }
 
-pub type CGDisplayStreamFrameAvailableHandler = *const Block<(CGDisplayStreamFrameStatus, u64, IOSurfaceRef, CGDisplayStreamUpdateRef), ()>;
+pub type CGDisplayStreamFrameAvailableHandler = *const Block<(CGDisplayStreamFrameStatus, u64, *const IOSurfaceRef, CGDisplayStreamUpdateRef), ()>;
 
 extern "C" {
     pub fn CGDisplayStreamUpdateGetTypeID() -> CFTypeID;
@@ -152,23 +153,23 @@ impl_TCFType!(CGDisplayStream, CGDisplayStreamRef, CGDisplayStreamGetTypeID);
 impl_CFTypeDescription!(CGDisplayStream);
 
 impl CGDisplayStream {
-    fn new_frame_available_handler<F>(closure: F) -> RcBlock<(CGDisplayStreamFrameStatus, u64, IOSurfaceRef, CGDisplayStreamUpdateRef), ()>
+    fn new_frame_available_handler<F>(closure: F) -> RcBlock<(CGDisplayStreamFrameStatus, u64, *const IOSurfaceRef, CGDisplayStreamUpdateRef), ()>
     where
-        F: Fn(CGDisplayStreamFrameStatus, u64, Option<IOSurface>, Option<CGDisplayStreamUpdate>) + 'static,
+        F: Fn(CGDisplayStreamFrameStatus, u64, Option<CFRetained<IOSurfaceRef>>, Option<CGDisplayStreamUpdate>) + 'static,
     {
-        ConcreteBlock::new(move |status: CGDisplayStreamFrameStatus, timestamp: u64, surface: IOSurfaceRef, update: CGDisplayStreamUpdateRef| {
-            let surface = if surface.is_null() {
-                None
-            } else {
-                Some(unsafe { IOSurface::wrap_under_get_rule(surface as IOSurfaceRef) })
-            };
-            let update = if update.is_null() {
-                None
-            } else {
-                Some(unsafe { CGDisplayStreamUpdate::wrap_under_get_rule(update as CGDisplayStreamUpdateRef) })
-            };
-            closure(status, timestamp, surface, update);
-        })
+        ConcreteBlock::new(
+            move |status: CGDisplayStreamFrameStatus, timestamp: u64, surface: *const IOSurfaceRef, update: CGDisplayStreamUpdateRef| {
+                // The surface follows the Core Foundation "Get" rule, so retain it to keep an
+                // owned handle.
+                let surface = NonNull::new(surface.cast_mut()).map(|surface| unsafe { CFRetained::retain(surface) });
+                let update = if update.is_null() {
+                    None
+                } else {
+                    Some(unsafe { CGDisplayStreamUpdate::wrap_under_get_rule(update as CGDisplayStreamUpdateRef) })
+                };
+                closure(status, timestamp, surface, update);
+            },
+        )
         .copy()
     }
 
@@ -181,7 +182,7 @@ impl CGDisplayStream {
         closure: F,
     ) -> Result<CGDisplayStream, ()>
     where
-        F: Fn(CGDisplayStreamFrameStatus, u64, Option<IOSurface>, Option<CGDisplayStreamUpdate>) + 'static,
+        F: Fn(CGDisplayStreamFrameStatus, u64, Option<CFRetained<IOSurfaceRef>>, Option<CGDisplayStreamUpdate>) + 'static,
     {
         let stream = unsafe {
             CGDisplayStreamCreate(
@@ -210,7 +211,7 @@ impl CGDisplayStream {
         closure: F,
     ) -> Result<CGDisplayStream, ()>
     where
-        F: Fn(CGDisplayStreamFrameStatus, u64, Option<IOSurface>, Option<CGDisplayStreamUpdate>) + 'static,
+        F: Fn(CGDisplayStreamFrameStatus, u64, Option<CFRetained<IOSurfaceRef>>, Option<CGDisplayStreamUpdate>) + 'static,
     {
         let stream = unsafe {
             CGDisplayStreamCreateWithDispatchQueue(

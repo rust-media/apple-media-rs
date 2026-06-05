@@ -15,10 +15,11 @@ edition.workspace = true
 block = "0.1"
 core-foundation.workspace = true
 core-graphics2 = { workspace = true, features = ["display"] }
-io-surface = { version = "0.16", default-features = false }
 libc.workspace = true
 metal = { version = "0.33", optional = true }
 objc2 = { workspace = true, optional = true }
+objc2-core-foundation.workspace = true
+objc2-io-surface.workspace = true
 
 [features]
 default = ["display-link", "link"]

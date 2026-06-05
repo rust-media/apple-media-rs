@@ -1,11 +1,12 @@
-use std::ptr::{null, null_mut};
+use std::ptr::{null, null_mut, NonNull};
 
 use core_foundation::{
     base::{kCFAllocatorDefault, CFAllocatorRef, CFType, TCFType},
     dictionary::{CFDictionary, CFDictionaryRef},
     string::{CFString, CFStringRef},
 };
-use io_surface::{IOSurface, IOSurfaceRef};
+use objc2_core_foundation::CFRetained;
+use objc2_io_surface::IOSurfaceRef;
 
 use crate::{
     pixel_buffer::{CVPixelBuffer, CVPixelBufferRef},
@@ -19,10 +20,10 @@ extern "C" {
     pub static kCVPixelBufferIOSurfaceOpenGLESTextureCompatibilityKey: CFStringRef;
     pub static kCVPixelBufferIOSurfaceOpenGLESFBOCompatibilityKey: CFStringRef;
 
-    pub fn CVPixelBufferGetIOSurface(pixelBuffer: CVPixelBufferRef) -> IOSurfaceRef;
+    pub fn CVPixelBufferGetIOSurface(pixelBuffer: CVPixelBufferRef) -> *const IOSurfaceRef;
     pub fn CVPixelBufferCreateWithIOSurface(
         allocator: CFAllocatorRef,
-        surface: IOSurfaceRef,
+        surface: &IOSurfaceRef,
         pixelBufferAttributes: CFDictionaryRef,
         pixelBufferOut: *mut CVPixelBufferRef,
     ) -> CVReturn;
@@ -58,12 +59,12 @@ impl From<CVPixelBufferIOSurfaceKeys> for CFString {
 
 impl CVPixelBuffer {
     #[inline]
-    pub fn from_io_surface(io_surface: &IOSurface, options: Option<&CFDictionary<CFString, CFType>>) -> Result<CVPixelBuffer, CVReturn> {
+    pub fn from_io_surface(io_surface: &IOSurfaceRef, options: Option<&CFDictionary<CFString, CFType>>) -> Result<CVPixelBuffer, CVReturn> {
         let mut pixel_buffer: CVPixelBufferRef = null_mut();
         let status = unsafe {
             CVPixelBufferCreateWithIOSurface(
                 kCFAllocatorDefault,
-                io_surface.as_concrete_TypeRef(),
+                io_surface,
                 options.map_or(null(), |options| options.as_concrete_TypeRef()),
                 &mut pixel_buffer,
             )
@@ -76,14 +77,12 @@ impl CVPixelBuffer {
     }
 
     #[inline]
-    pub fn get_io_surface(&self) -> Option<IOSurface> {
+    pub fn get_io_surface(&self) -> Option<CFRetained<IOSurfaceRef>> {
         unsafe {
             let surface = CVPixelBufferGetIOSurface(self.as_concrete_TypeRef());
-            if surface.is_null() {
-                None
-            } else {
-                Some(TCFType::wrap_under_create_rule(surface))
-            }
+            // `CVPixelBufferGetIOSurface` follows the Core Foundation "Get" rule (the
+            // returned reference is not owned), so retain it to obtain an owned handle.
+            NonNull::new(surface.cast_mut()).map(|surface| CFRetained::retain(surface))
         }
     }
 }

@@ -11,7 +11,7 @@ use libc::{c_void, size_t};
 
 use crate::{
     base::CVOptionFlags,
-    image_buffer::CVImageBufferRef,
+    image_buffer::{CVImageBuffer, CVImageBufferRef},
     metal_texture::{CVMetalTexture, CVMetalTextureRef},
     r#return::{kCVReturnSuccess, CVReturn},
 };
@@ -97,7 +97,7 @@ impl CVMetalTextureCache {
     #[inline]
     pub fn create_texture_from_image(
         &self,
-        source_image: CVImageBufferRef,
+        source_image: &CVImageBuffer,
         texture_attributes: Option<&CFDictionary<CFString, CFType>>,
         pixel_format: metal::MTLPixelFormat,
         width: size_t,
@@ -109,7 +109,7 @@ impl CVMetalTextureCache {
             CVMetalTextureCacheCreateTextureFromImage(
                 kCFAllocatorDefault,
                 self.as_concrete_TypeRef(),
-                source_image,
+                source_image.as_concrete_TypeRef(),
                 texture_attributes.map_or(null(), |attrs| attrs.as_concrete_TypeRef()),
                 pixel_format,
                 width,
