@@ -20,11 +20,9 @@ license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [workspace.dependencies]
-audio-toolbox = { version = "0.1.0", default-features = false, path = "audio-toolbox" }
-core-audio = { version = "0.1.0", default-features = false, path = "core-audio" }
 core-audio-types = { version = "0.3.0", default-features = false, path = "core-audio-types" }
 core-graphics2 = { version = "0.6.0", default-features = false, path = "core-graphics" }
-core-media = { version = "0.7.0", default-features = false, path = "core-media" }
+core-media = { version = "0.8.0", default-features = false, path = "core-media" }
 core-video = { version = "0.6.0", default-features = false, path = "core-video" }
 bitflags = "2.5"
 cfg-if = "1.0"
