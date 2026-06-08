@@ -1,4 +1,7 @@
-use std::{ptr::NonNull, slice::from_raw_parts};
+use std::{
+    ptr::{null, NonNull},
+    slice::from_raw_parts,
+};
 
 use block::{Block, ConcreteBlock, RcBlock};
 use core_foundation::{
@@ -178,7 +181,7 @@ impl CGDisplayStream {
         output_width: size_t,
         output_height: size_t,
         pixel_format: i32,
-        properties: &CFDictionary<CFString, CFType>,
+        properties: Option<&CFDictionary<CFString, CFType>>,
         closure: F,
     ) -> Result<CGDisplayStream, ()>
     where
@@ -190,7 +193,7 @@ impl CGDisplayStream {
                 output_width,
                 output_height,
                 pixel_format,
-                properties.as_concrete_TypeRef(),
+                properties.map(|properties| properties.as_concrete_TypeRef()).unwrap_or(null()),
                 &*Self::new_frame_available_handler(closure),
             )
         };
@@ -206,7 +209,7 @@ impl CGDisplayStream {
         output_width: size_t,
         output_height: size_t,
         pixel_format: i32,
-        properties: &CFDictionary<CFString, CFType>,
+        properties: Option<&CFDictionary<CFString, CFType>>,
         queue: &DispatchQueue,
         closure: F,
     ) -> Result<CGDisplayStream, ()>
@@ -219,7 +222,7 @@ impl CGDisplayStream {
                 output_width,
                 output_height,
                 pixel_format,
-                properties.as_concrete_TypeRef(),
+                properties.map(|properties| properties.as_concrete_TypeRef()).unwrap_or(null()),
                 queue.as_raw().as_ptr() as dispatch_queue_t,
                 &*Self::new_frame_available_handler(closure),
             )

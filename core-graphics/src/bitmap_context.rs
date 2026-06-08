@@ -1,4 +1,4 @@
-use std::{mem, ptr::null_mut, slice};
+use std::{ptr::null_mut, slice};
 
 use core_foundation::base::TCFType;
 use libc::{c_void, size_t};
@@ -118,7 +118,7 @@ impl CGContext {
         let (width, height, bytes_per_row) = (bitmap_data.width() as size_t, bitmap_data.height() as size_t, bitmap_data.bytes_per_row() as size_t);
         unsafe {
             let ptr = bitmap_data.mut_ptr() as *mut c_void;
-            let info = mem::transmute::<Box<Box<dyn BitmapData>>, &mut c_void>(bitmap_data);
+            let info = Box::into_raw(bitmap_data) as *mut c_void;
             let context = CGBitmapContextCreateWithData(
                 ptr,
                 width,
@@ -131,7 +131,7 @@ impl CGContext {
                 info,
             );
             if context.is_null() {
-                drop(mem::transmute::<*mut c_void, Box<Box<dyn BitmapData>>>(info));
+                drop(Box::from_raw(info as *mut Box<dyn BitmapData>));
                 return None;
             } else {
                 return Some(TCFType::wrap_under_create_rule(context));
@@ -139,7 +139,7 @@ impl CGContext {
         }
 
         extern "C" fn release(release_info: *mut c_void, _: *mut c_void) {
-            unsafe { drop(mem::transmute::<*mut c_void, Box<Box<dyn BitmapData>>>(release_info)) }
+            unsafe { drop(Box::from_raw(release_info as *mut Box<dyn BitmapData>)) }
         }
     }
 

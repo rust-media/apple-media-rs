@@ -285,7 +285,7 @@ extern "C" {
         pixelFormatType: OSType,
         baseAddress: *mut c_void,
         bytesPerRow: size_t,
-        releaseCallback: CVPixelBufferReleaseBytesCallback,
+        releaseCallback: Option<CVPixelBufferReleaseBytesCallback>,
         releaseRefCon: *mut c_void,
         pixelBufferAttributes: CFDictionaryRef,
         pixelBufferOut: *mut CVPixelBufferRef,
@@ -302,7 +302,7 @@ extern "C" {
         planeWidth: *const size_t,
         planeHeight: *const size_t,
         planeBytesPerRow: *const size_t,
-        releaseCallback: CVPixelBufferReleasePlanarBytesCallback,
+        releaseCallback: Option<CVPixelBufferReleasePlanarBytesCallback>,
         releaseRefCon: *mut c_void,
         pixelBufferAttributes: CFDictionaryRef,
         pixelBufferOut: *mut CVPixelBufferRef,
@@ -435,8 +435,8 @@ impl CVPixelBuffer {
         height: usize,
         base_address: *mut c_void,
         bytes_per_row: usize,
-        release_callback: CVPixelBufferReleaseBytesCallback,
-        release_ref_con: *mut c_void,
+        release_callback: Option<CVPixelBufferReleaseBytesCallback>,
+        release_ref_con: Option<*mut c_void>,
         options: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<CVPixelBuffer, CVReturn> {
         let mut pixel_buffer: CVPixelBufferRef = null_mut();
@@ -449,7 +449,7 @@ impl CVPixelBuffer {
                 base_address,
                 bytes_per_row,
                 release_callback,
-                release_ref_con,
+                release_ref_con.unwrap_or(null_mut()),
                 options.map_or(null(), |options| options.as_concrete_TypeRef()),
                 &mut pixel_buffer,
             )
@@ -474,7 +474,7 @@ impl CVPixelBuffer {
         plane_height: Vec<usize>,
         plane_bytes_per_row: Vec<usize>,
         release_callback: CVPixelBufferReleasePlanarBytesCallback,
-        release_ref_con: *mut c_void,
+        release_ref_con: Option<*mut c_void>,
         options: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<CVPixelBuffer, CVReturn> {
         if plane_base_address.len() != number_of_planes ||
@@ -498,8 +498,8 @@ impl CVPixelBuffer {
                 plane_width.as_ptr(),
                 plane_height.as_ptr(),
                 plane_bytes_per_row.as_ptr(),
-                release_callback,
-                release_ref_con,
+                Some(release_callback),
+                release_ref_con.unwrap_or(null_mut()),
                 options.map_or(null(), |options| options.as_concrete_TypeRef()),
                 &mut pixel_buffer,
             )

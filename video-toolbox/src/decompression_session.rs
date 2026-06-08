@@ -31,7 +31,7 @@ pub type VTDecompressionSessionRef = VTSessionRef;
 #[derive(Debug, Copy, Clone)]
 pub struct VTDecompressionOutputCallbackRecord {
     pub decompressionOutputCallback: VTDecompressionOutputCallback,
-    pub decompressionOutputRefCon: *mut c_void,
+    pub decompressionOutputRefCon: Option<*mut c_void>,
 }
 
 pub type VTDecompressionOutputHandler = *const Block<(OSStatus, VTDecodeInfoFlags, CVImageBufferRef, CMTime, CMTime), ()>;
@@ -86,24 +86,24 @@ impl TVTSession for VTDecompressionSession {}
 impl VTDecompressionSession {
     pub fn new(
         video_format_description: CMVideoFormatDescription,
-        video_decoder_specification: Option<CFDictionary<CFString, CFType>>,
-        destination_image_buffer_attributes: Option<CFDictionary<CFString, CFType>>,
+        video_decoder_specification: Option<&CFDictionary<CFString, CFType>>,
+        destination_image_buffer_attributes: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<Self, OSStatus> {
         unsafe { Self::new_with_callback(video_format_description, video_decoder_specification, destination_image_buffer_attributes, None) }
     }
 
     pub unsafe fn new_with_callback(
         video_format_description: CMVideoFormatDescription,
-        video_decoder_specification: Option<CFDictionary<CFString, CFType>>,
-        destination_image_buffer_attributes: Option<CFDictionary<CFString, CFType>>,
+        video_decoder_specification: Option<&CFDictionary<CFString, CFType>>,
+        destination_image_buffer_attributes: Option<&CFDictionary<CFString, CFType>>,
         output_callback: Option<*const VTDecompressionOutputCallbackRecord>,
     ) -> Result<Self, OSStatus> {
         let mut session: VTDecompressionSessionRef = null_mut();
         let status = VTDecompressionSessionCreate(
             kCFAllocatorDefault,
             video_format_description.as_concrete_TypeRef(),
-            video_decoder_specification.as_ref().map_or(null(), |s| s.as_concrete_TypeRef()),
-            destination_image_buffer_attributes.as_ref().map_or(null(), |a| a.as_concrete_TypeRef()),
+            video_decoder_specification.map_or(null(), |s| s.as_concrete_TypeRef()),
+            destination_image_buffer_attributes.map_or(null(), |a| a.as_concrete_TypeRef()),
             output_callback.unwrap_or(null()),
             &mut session,
         );
@@ -114,7 +114,7 @@ impl VTDecompressionSession {
         &self,
         sample_buffer: CMSampleBuffer,
         decode_flags: VTDecodeFrameFlags,
-        source_frame_ref_con: *mut c_void,
+        source_frame_ref_con: Option<*mut c_void>,
     ) -> Result<VTDecodeInfoFlags, OSStatus> {
         let mut info_flags_out: VTDecodeInfoFlags = VTDecodeInfoFlags::empty();
 
@@ -122,7 +122,7 @@ impl VTDecompressionSession {
             self.as_concrete_TypeRef(),
             sample_buffer.as_concrete_TypeRef(),
             decode_flags,
-            source_frame_ref_con,
+            source_frame_ref_con.unwrap_or(null_mut()),
             &mut info_flags_out,
         );
 

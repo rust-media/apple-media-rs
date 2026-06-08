@@ -187,7 +187,7 @@ impl CVDisplayLink {
             )
             .copy()
         });
-        let result = unsafe { CVDisplayLinkSetOutputHandler(self.as_concrete_TypeRef(), handler.as_ref().map_or(null(), |h| &**h)) };
+        let result = unsafe { CVDisplayLinkSetOutputHandler(self.as_concrete_TypeRef(), handler.map_or(null(), |h| &*h)) };
         if result == kCVReturnSuccess {
             Ok(())
         } else {

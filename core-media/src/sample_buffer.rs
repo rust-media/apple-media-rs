@@ -67,7 +67,7 @@ extern "C" {
         allocator: CFAllocatorRef,
         dataBuffer: CMBlockBufferRef,
         dataReady: Boolean,
-        makeDataReadyCallback: CMSampleBufferMakeDataReadyCallback,
+        makeDataReadyCallback: Option<CMSampleBufferMakeDataReadyCallback>,
         makeDataReadyRefcon: *mut c_void,
         formatDescription: CMFormatDescriptionRef,
         numSamples: CMItemCount,
@@ -105,7 +105,7 @@ extern "C" {
         allocator: CFAllocatorRef,
         dataBuffer: CMBlockBufferRef,
         dataReady: Boolean,
-        makeDataReadyCallback: CMSampleBufferMakeDataReadyCallback,
+        makeDataReadyCallback: Option<CMSampleBufferMakeDataReadyCallback>,
         makeDataReadyRefcon: *mut c_void,
         formatDescription: CMFormatDescriptionRef,
         numSamples: CMItemCount,
@@ -137,7 +137,7 @@ extern "C" {
         allocator: CFAllocatorRef,
         imageBuffer: CVImageBufferRef,
         dataReady: Boolean,
-        makeDataReadyCallback: CMSampleBufferMakeDataReadyCallback,
+        makeDataReadyCallback: Option<CMSampleBufferMakeDataReadyCallback>,
         makeDataReadyRefcon: *mut c_void,
         formatDescription: CMVideoFormatDescriptionRef,
         sampleTiming: *const CMSampleTimingInfo,
@@ -346,8 +346,8 @@ impl CMSampleBuffer {
     pub unsafe fn new(
         data_buffer: Option<&CMBlockBuffer>,
         data_ready: bool,
-        make_data_ready_callback: CMSampleBufferMakeDataReadyCallback,
-        make_data_ready_refcon: *mut c_void,
+        make_data_ready_callback: Option<CMSampleBufferMakeDataReadyCallback>,
+        make_data_ready_refcon: Option<*mut c_void>,
         format_description: Option<&CMFormatDescription>,
         num_samples: CMItemCount,
         sample_timing_array: Option<&[CMSampleTimingInfo]>,
@@ -360,7 +360,7 @@ impl CMSampleBuffer {
                 data_buffer.map_or(null_mut(), |b| b.as_concrete_TypeRef()),
                 data_ready as Boolean,
                 make_data_ready_callback,
-                make_data_ready_refcon,
+                make_data_ready_refcon.unwrap_or(null_mut()),
                 format_description.map_or(null_mut(), |f| f.as_concrete_TypeRef()),
                 num_samples,
                 sample_timing_array.map_or(0, |a| a.len() as CMItemCount),
@@ -406,7 +406,7 @@ impl CMSampleBuffer {
                 sample_size_array.map_or(0, |a| a.len() as CMItemCount),
                 sample_size_array.map_or(null(), |a| a.as_ptr()),
                 &mut sample_buffer,
-                handler.as_ref().map_or(null(), |h| &**h),
+                handler.map_or(null(), |h| &*h),
             )
         };
         status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
@@ -440,8 +440,8 @@ impl CMSampleBuffer {
     pub unsafe fn new_audio_sample_buffer_with_packet_descriptions(
         data_buffer: Option<&CMBlockBuffer>,
         data_ready: bool,
-        make_data_ready_callback: CMSampleBufferMakeDataReadyCallback,
-        make_data_ready_refcon: *mut c_void,
+        make_data_ready_callback: Option<CMSampleBufferMakeDataReadyCallback>,
+        make_data_ready_refcon: Option<*mut c_void>,
         format_description: &CMFormatDescription,
         num_samples: CMItemCount,
         presentation_time_stamp: CMTime,
@@ -454,7 +454,7 @@ impl CMSampleBuffer {
                 data_buffer.map_or(null_mut(), |b| b.as_concrete_TypeRef()),
                 data_ready as Boolean,
                 make_data_ready_callback,
-                make_data_ready_refcon,
+                make_data_ready_refcon.unwrap_or(null_mut()),
                 format_description.as_concrete_TypeRef(),
                 num_samples,
                 presentation_time_stamp,
@@ -495,7 +495,7 @@ impl CMSampleBuffer {
                 presentation_time_stamp,
                 packet_descriptions.map_or(null(), |a| a.as_ptr()),
                 &mut sample_buffer,
-                handler.as_ref().map_or(null(), |h| &**h),
+                handler.map_or(null(), |h| &*h),
             )
         };
         status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
@@ -527,8 +527,8 @@ impl CMSampleBuffer {
     pub unsafe fn from_image_buffer(
         image_buffer: &CVImageBuffer,
         data_ready: bool,
-        make_data_ready_callback: CMSampleBufferMakeDataReadyCallback,
-        make_data_ready_refcon: *mut c_void,
+        make_data_ready_callback: Option<CMSampleBufferMakeDataReadyCallback>,
+        make_data_ready_refcon: Option<*mut c_void>,
         format_description: &CMVideoFormatDescription,
         sample_timing: &CMSampleTimingInfo,
     ) -> Result<CMSampleBuffer, OSStatus> {
@@ -538,7 +538,7 @@ impl CMSampleBuffer {
             image_buffer.as_concrete_TypeRef(),
             data_ready as Boolean,
             make_data_ready_callback,
-            make_data_ready_refcon,
+            make_data_ready_refcon.unwrap_or(null_mut()),
             format_description.as_concrete_TypeRef(),
             sample_timing,
             &mut sample_buffer,
@@ -572,7 +572,7 @@ impl CMSampleBuffer {
                 format_description.as_concrete_TypeRef(),
                 sample_timing,
                 &mut sample_buffer,
-                handler.as_ref().map_or(null(), |h| &**h),
+                handler.map_or(null(), |h| &*h),
             )
         };
         status_to_result(status).map(|_| unsafe { CMSampleBuffer::wrap_under_create_rule(sample_buffer) })
@@ -731,8 +731,7 @@ impl CMSampleBuffer {
                         })
                         .copy()
                     })
-                    .as_ref()
-                    .map_or(null(), |h| &**h),
+                    .map_or(null(), |h| &*h),
             )
         };
         status_to_result(status)
@@ -858,7 +857,7 @@ impl CMSampleBuffer {
             if format_description.is_null() {
                 None
             } else {
-                Some(TCFType::wrap_under_create_rule(format_description))
+                Some(TCFType::wrap_under_get_rule(format_description))
             }
         }
     }
@@ -878,9 +877,9 @@ impl CMSampleBuffer {
     pub unsafe fn call_for_each_sample(
         &self,
         callback: extern "C" fn(CMSampleBufferRef, CMItemCount, *mut c_void) -> OSStatus,
-        refcon: *mut c_void,
+        refcon: Option<*mut c_void>,
     ) -> Result<(), OSStatus> {
-        let status = unsafe { CMSampleBufferCallForEachSample(self.as_concrete_TypeRef(), callback, refcon) };
+        let status = unsafe { CMSampleBufferCallForEachSample(self.as_concrete_TypeRef(), callback, refcon.unwrap_or(null_mut())) };
         status_to_result(status)
     }
 
@@ -899,8 +898,7 @@ impl CMSampleBuffer {
                         })
                         .copy()
                     })
-                    .as_ref()
-                    .map_or(null(), |h| &**h),
+                    .map_or(null(), |h| &*h),
             )
         };
         status_to_result(status)

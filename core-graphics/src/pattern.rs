@@ -1,3 +1,5 @@
+use std::ptr::{null, null_mut};
+
 use core_foundation::{
     base::{CFTypeID, TCFType},
     impl_CFTypeDescription, impl_TCFType,
@@ -60,7 +62,7 @@ impl_CFTypeDescription!(CGPattern);
 
 impl CGPattern {
     pub unsafe fn new(
-        info: *mut c_void,
+        info: Option<*mut c_void>,
         bounds: CGRect,
         matrix: CGAffineTransform,
         xStep: CGFloat,
@@ -70,8 +72,16 @@ impl CGPattern {
         callbacks: Option<&CGPatternCallbacks>,
     ) -> Self {
         unsafe {
-            let pattern =
-                CGPatternCreate(info, bounds, matrix, xStep, yStep, tiling, is_colored, callbacks.map_or(std::ptr::null(), |c| c as *const _));
+            let pattern = CGPatternCreate(
+                info.unwrap_or(null_mut()),
+                bounds,
+                matrix,
+                xStep,
+                yStep,
+                tiling,
+                is_colored,
+                callbacks.map_or(null(), |c| c as *const _),
+            );
             TCFType::wrap_under_create_rule(pattern)
         }
     }

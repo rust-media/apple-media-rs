@@ -600,12 +600,12 @@ unsafe impl RefEncode for opaqueCMFormatDescription {
 
 pub trait TCMFormatDescription: TCFType {
     #[inline]
-    fn as_buffer(&self) -> CMFormatDescription {
+    fn as_format_description(&self) -> CMFormatDescription {
         unsafe { CMFormatDescription::wrap_under_get_rule(self.as_concrete_TypeRef().as_void_ptr() as CMFormatDescriptionRef) }
     }
 
     #[inline]
-    fn into_buffer(self) -> CMFormatDescription
+    fn into_format_description(self) -> CMFormatDescription
     where
         Self: Sized,
     {
@@ -859,7 +859,7 @@ impl CMVideoFormatDescription {
                 codec_type,
                 width,
                 height,
-                extensions.as_ref().map_or(null(), |exts| exts.as_concrete_TypeRef()),
+                extensions.map_or(null(), |exts| exts.as_concrete_TypeRef()),
                 &mut format_description,
             )
         };
@@ -894,7 +894,7 @@ impl CMVideoFormatDescription {
     pub fn from_hevc_parameter_sets(
         parameter_sets: &[&[u8]],
         nal_unit_header_length: i32,
-        extensions: &CFDictionary<CFString, CFType>,
+        extensions: Option<&CFDictionary<CFString, CFType>>,
     ) -> Result<Self, OSStatus> {
         let mut format_description: CMVideoFormatDescriptionRef = null_mut();
         let status = unsafe {
@@ -904,7 +904,7 @@ impl CMVideoFormatDescription {
                 parameter_sets.iter().map(|data| data.as_ptr()).collect::<Vec<_>>().as_ptr(),
                 parameter_sets.iter().map(|data| data.len()).collect::<Vec<_>>().as_ptr(),
                 nal_unit_header_length,
-                extensions.as_concrete_TypeRef(),
+                extensions.map_or(null(), |exts| exts.as_concrete_TypeRef()),
                 &mut format_description,
             )
         };
@@ -990,10 +990,16 @@ impl_CFTypeDescription!(CMMuxedFormatDescription);
 
 impl CMMuxedFormatDescription {
     #[inline]
-    pub fn new(mux_type: CMMuxedStreamType, extensions: &CFDictionary<CFString, CFType>) -> Result<Self, OSStatus> {
+    pub fn new(mux_type: CMMuxedStreamType, extensions: Option<&CFDictionary<CFString, CFType>>) -> Result<Self, OSStatus> {
         let mut format_description: CMMuxedFormatDescriptionRef = null_mut();
-        let status =
-            unsafe { CMMuxedFormatDescriptionCreate(kCFAllocatorDefault, mux_type, extensions.as_concrete_TypeRef(), &mut format_description) };
+        let status = unsafe {
+            CMMuxedFormatDescriptionCreate(
+                kCFAllocatorDefault,
+                mux_type,
+                extensions.map_or(null(), |exts| exts.as_concrete_TypeRef()),
+                &mut format_description,
+            )
+        };
         status_to_result(status).map(|_| unsafe { TCFType::wrap_under_create_rule(format_description) })
     }
 

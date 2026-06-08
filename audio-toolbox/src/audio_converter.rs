@@ -1,4 +1,7 @@
-use std::{mem, ptr::NonNull};
+use std::{
+    mem,
+    ptr::{null_mut, NonNull},
+};
 
 use core_audio_types::{AudioBufferList, AudioClassDescription, AudioStreamBasicDescription, AudioStreamPacketDescription};
 use core_foundation::base::OSStatus;
@@ -145,7 +148,7 @@ impl AudioConverter {
     pub unsafe fn fill_complex_buffer(
         &self,
         input_data_proc: sys::AudioConverterComplexInputDataProc,
-        input_data_proc_user_data: *mut c_void,
+        input_data_proc_user_data: Option<*mut c_void>,
         output_data_packet_size: &mut u32,
         output_data: &mut AudioBufferList,
         packet_descriptions: Option<&mut [AudioStreamPacketDescription]>,
@@ -154,7 +157,7 @@ impl AudioConverter {
         let status = sys::AudioConverterFillComplexBuffer(
             self.as_raw(),
             input_data_proc,
-            input_data_proc_user_data,
+            input_data_proc_user_data.unwrap_or(null_mut()),
             NonNull::from(output_data_packet_size),
             NonNull::from(output_data),
             packet_descriptions,

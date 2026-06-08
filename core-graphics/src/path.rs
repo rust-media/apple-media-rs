@@ -377,12 +377,12 @@ impl CGPath {
         unsafe { CGPathContainsPoint(self.as_concrete_TypeRef(), transform.map_or(null(), |t| t as *const CGAffineTransform), point, eo_fill) }
     }
 
-    pub fn apply<F>(&self, closure: F)
+    pub fn apply<F>(&self, mut closure: F)
     where
         F: FnMut(CGPathElementRef),
     {
         unsafe {
-            CGPathApply(self.as_concrete_TypeRef(), &closure as *const _ as *mut c_void, callback::<F>);
+            CGPathApply(self.as_concrete_TypeRef(), &mut closure as *mut F as *mut c_void, callback::<F>);
         }
 
         extern "C" fn callback<F>(info: *mut c_void, element: *const CGPathElement)

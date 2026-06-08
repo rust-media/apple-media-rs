@@ -122,7 +122,7 @@ impl CGFont {
 
     pub fn new_copy_from_variations(&self, variations: Option<&CFDictionary<CFString, CFNumber>>) -> Option<CGFont> {
         unsafe {
-            let font = CGFontCreateCopyWithVariations(self.as_concrete_TypeRef(), variations.as_ref().map_or(null(), |v| v.as_concrete_TypeRef()));
+            let font = CGFontCreateCopyWithVariations(self.as_concrete_TypeRef(), variations.map_or(null(), |v| v.as_concrete_TypeRef()));
             if font.is_null() {
                 None
             } else {

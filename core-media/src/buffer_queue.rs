@@ -47,7 +47,7 @@ pub type CMBufferGetSizeHandler = *const Block<CMBufferRef, size_t>;
 #[derive(Clone, Copy, Debug)]
 pub struct CMBufferCallbacks {
     pub version: u32,
-    pub refcon: *mut c_void,
+    pub refcon: Option<*mut c_void>,
     pub getDecodeTimeStamp: CMBufferGetTimeCallback,
     pub getPresentationTimeStamp: CMBufferGetTimeCallback,
     pub getDuration: CMBufferGetTimeCallback,
@@ -320,10 +320,10 @@ impl CMBufferQueue {
     pub unsafe fn reset_with_callback(
         &self,
         callback: extern "C" fn(buffer: CMBufferRef, refcon: *mut c_void),
-        refcon: *mut c_void,
+        refcon: Option<*mut c_void>,
     ) -> Result<(), OSStatus> {
         unsafe {
-            let status = CMBufferQueueResetWithCallback(self.as_concrete_TypeRef(), callback, refcon);
+            let status = CMBufferQueueResetWithCallback(self.as_concrete_TypeRef(), callback, refcon.unwrap_or(null_mut()));
             status_to_result(status)
         }
     }
@@ -376,13 +376,13 @@ impl CMBufferQueue {
     pub unsafe fn install_trigger(
         &self,
         callback: CMBufferQueueTriggerCallback,
-        refcon: *mut c_void,
+        refcon: Option<*mut c_void>,
         condition: CMBufferQueueTriggerCondition,
         time: CMTime,
     ) -> Result<CMBufferQueueTriggerToken, OSStatus> {
         unsafe {
             let mut token = null();
-            let status = CMBufferQueueInstallTrigger(self.as_concrete_TypeRef(), callback, refcon, condition, time, &mut token);
+            let status = CMBufferQueueInstallTrigger(self.as_concrete_TypeRef(), callback, refcon.unwrap_or(null_mut()), condition, time, &mut token);
             status_to_result(status).map(|_| token)
         }
     }
@@ -390,14 +390,20 @@ impl CMBufferQueue {
     pub unsafe fn install_trigger_with_integer_threshold(
         &self,
         callback: CMBufferQueueTriggerCallback,
-        refcon: *mut c_void,
+        refcon: Option<*mut c_void>,
         condition: CMBufferQueueTriggerCondition,
         threshold: CMItemCount,
     ) -> Result<CMBufferQueueTriggerToken, OSStatus> {
         unsafe {
             let mut token = null();
-            let status =
-                CMBufferQueueInstallTriggerWithIntegerThreshold(self.as_concrete_TypeRef(), callback, refcon, condition, threshold, &mut token);
+            let status = CMBufferQueueInstallTriggerWithIntegerThreshold(
+                self.as_concrete_TypeRef(),
+                callback,
+                refcon.unwrap_or(null_mut()),
+                condition,
+                threshold,
+                &mut token,
+            );
             status_to_result(status).map(|_| token)
         }
     }
@@ -418,9 +424,8 @@ impl CMBufferQueue {
             })
             .copy()
         });
-        let status = unsafe {
-            CMBufferQueueInstallTriggerHandler(self.as_concrete_TypeRef(), condition, time, &mut token, handler.as_ref().map_or(null(), |h| &**h))
-        };
+        let status =
+            unsafe { CMBufferQueueInstallTriggerHandler(self.as_concrete_TypeRef(), condition, time, &mut token, handler.map_or(null(), |h| &*h)) };
         status_to_result(status).map(|_| token)
     }
 
@@ -446,7 +451,7 @@ impl CMBufferQueue {
                 condition,
                 threshold,
                 &mut token,
-                handler.as_ref().map_or(null(), |h| &**h),
+                handler.map_or(null(), |h| &*h),
             )
         };
         status_to_result(status).map(|_| token)
@@ -469,17 +474,17 @@ impl CMBufferQueue {
     pub unsafe fn call_for_each_buffer(
         &self,
         callback: extern "C" fn(buffer: CMBufferRef, refcon: *mut c_void) -> OSStatus,
-        refcon: *mut c_void,
+        refcon: Option<*mut c_void>,
     ) -> Result<(), OSStatus> {
         unsafe {
-            let status = CMBufferQueueCallForEachBuffer(self.as_concrete_TypeRef(), callback, refcon);
+            let status = CMBufferQueueCallForEachBuffer(self.as_concrete_TypeRef(), callback, refcon.unwrap_or(null_mut()));
             status_to_result(status)
         }
     }
 
-    pub unsafe fn set_validation_callback(&self, callback: CMBufferValidationCallback, refcon: *mut c_void) -> Result<(), OSStatus> {
+    pub unsafe fn set_validation_callback(&self, callback: CMBufferValidationCallback, refcon: Option<*mut c_void>) -> Result<(), OSStatus> {
         unsafe {
-            let status = CMBufferQueueSetValidationCallback(self.as_concrete_TypeRef(), callback, refcon);
+            let status = CMBufferQueueSetValidationCallback(self.as_concrete_TypeRef(), callback, refcon.unwrap_or(null_mut()));
             status_to_result(status)
         }
     }
@@ -497,7 +502,7 @@ impl CMBufferQueue {
             .copy()
         });
 
-        let status = unsafe { CMBufferQueueSetValidationHandler(self.as_concrete_TypeRef(), handler.as_ref().map_or(null(), |h| &**h)) };
+        let status = unsafe { CMBufferQueueSetValidationHandler(self.as_concrete_TypeRef(), handler.map_or(null(), |h| &*h)) };
         status_to_result(status)
     }
 }

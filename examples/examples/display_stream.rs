@@ -57,7 +57,7 @@ fn main() {
         output_width,
         output_height,
         pixel_format as i32,
-        &properties.to_immutable(),
+        Some(&properties.to_immutable()),
         &queue,
         closure,
     ) {

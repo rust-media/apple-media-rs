@@ -1,7 +1,10 @@
-use std::{ptr::null_mut, slice::from_raw_parts_mut};
+use std::{
+    ptr::{null, null_mut},
+    slice::from_raw_parts_mut,
+};
 
 use core_foundation::{
-    base::{kCFAllocatorDefault, Boolean, CFAllocatorRef, CFTypeID, OSStatus, TCFType},
+    base::{kCFAllocatorDefault, kCFAllocatorNull, Boolean, CFAllocatorRef, CFTypeID, OSStatus, TCFType},
     declare_TCFType, impl_CFTypeDescription, impl_TCFType,
 };
 use libc::{c_void, size_t};
@@ -36,7 +39,7 @@ pub struct CMBlockBufferCustomBlockSource {
     pub version: u32,
     pub AllocateBlock: extern "C" fn(*mut c_void, size_t) -> *mut c_void,
     pub FreeBlock: extern "C" fn(*mut c_void, *mut c_void, size_t),
-    pub refcon: *mut c_void,
+    pub refcon: Option<*mut c_void>,
 }
 
 pub const kCMBlockBufferCustomBlockSourceVersion: u32 = 0;
@@ -149,8 +152,37 @@ impl CMBlockBuffer {
 
     #[inline]
     pub unsafe fn new_with_memory_block(
+        memory_block: Option<*const c_void>,
+        block_length: size_t,
+        custom_block_source: Option<*const CMBlockBufferCustomBlockSource>,
+        offset_to_data: size_t,
+        data_length: size_t,
+        flags: CMBlockBufferFlags,
+    ) -> Result<CMBlockBuffer, OSStatus> {
+        unsafe {
+            let mut block_buffer: CMBlockBufferRef = null_mut();
+            let status = CMBlockBufferCreateWithMemoryBlock(
+                kCFAllocatorDefault,
+                memory_block.unwrap_or(null()),
+                block_length,
+                kCFAllocatorDefault,
+                custom_block_source.unwrap_or(null()),
+                offset_to_data,
+                data_length,
+                flags,
+                &mut block_buffer,
+            );
+            if status == kCMBlockBufferNoErr {
+                Ok(TCFType::wrap_under_create_rule(block_buffer))
+            } else {
+                Err(status)
+            }
+        }
+    }
+
+    #[inline]
+    pub unsafe fn new_with_memory_block_from_slice(
         memory_block: &[u8],
-        custom_block_source: *const CMBlockBufferCustomBlockSource,
         offset_to_data: size_t,
         data_length: size_t,
         flags: CMBlockBufferFlags,
@@ -161,9 +193,28 @@ impl CMBlockBuffer {
                 kCFAllocatorDefault,
                 memory_block.as_ptr() as *const c_void,
                 memory_block.len() as size_t,
-                kCFAllocatorDefault,
-                custom_block_source,
+                kCFAllocatorNull,
+                null(),
                 offset_to_data,
+                data_length,
+                flags,
+                &mut block_buffer,
+            );
+            status_to_result(status).map(|_| TCFType::wrap_under_create_rule(block_buffer))
+        }
+    }
+
+    #[inline]
+    pub fn new_with_length(data_length: size_t, flags: CMBlockBufferFlags) -> Result<CMBlockBuffer, OSStatus> {
+        unsafe {
+            let mut block_buffer: CMBlockBufferRef = null_mut();
+            let status = CMBlockBufferCreateWithMemoryBlock(
+                kCFAllocatorDefault,
+                null(),
+                data_length,
+                kCFAllocatorDefault,
+                null(),
+                0,
                 data_length,
                 flags,
                 &mut block_buffer,
@@ -196,7 +247,7 @@ impl CMBlockBuffer {
     #[inline]
     pub unsafe fn new_contiguous(
         &self,
-        custom_block_source: *const CMBlockBufferCustomBlockSource,
+        custom_block_source: Option<*const CMBlockBufferCustomBlockSource>,
         offset_to_data: size_t,
         data_length: size_t,
         flags: CMBlockBufferFlags,
@@ -207,7 +258,7 @@ impl CMBlockBuffer {
                 kCFAllocatorDefault,
                 self.as_concrete_TypeRef(),
                 kCFAllocatorDefault,
-                custom_block_source,
+                custom_block_source.unwrap_or(null()),
                 offset_to_data,
                 data_length,
                 flags,
@@ -221,7 +272,7 @@ impl CMBlockBuffer {
     pub unsafe fn append_memory_block(
         &self,
         memory_block: &[u8],
-        custom_block_source: *const CMBlockBufferCustomBlockSource,
+        custom_block_source: Option<*const CMBlockBufferCustomBlockSource>,
         offset_to_data: size_t,
         data_length: size_t,
         flags: CMBlockBufferFlags,
@@ -232,7 +283,7 @@ impl CMBlockBuffer {
                 memory_block.as_ptr() as *const c_void,
                 memory_block.len() as size_t,
                 kCFAllocatorDefault,
-                custom_block_source,
+                custom_block_source.unwrap_or(null()),
                 offset_to_data,
                 data_length,
                 flags,

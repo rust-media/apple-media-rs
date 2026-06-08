@@ -105,8 +105,8 @@ impl VTCompressionSession {
         width: i32,
         height: i32,
         codec_type: CMVideoCodecType,
-        encoder_specification: CFDictionary<CFString, CFType>,
-        source_image_buffer_attributes: CFDictionary<CFString, CFType>,
+        encoder_specification: Option<&CFDictionary<CFString, CFType>>,
+        source_image_buffer_attributes: Option<&CFDictionary<CFString, CFType>>,
         compressed_data_allocator: CFAllocator,
     ) -> Result<VTCompressionSession, OSStatus> {
         unsafe {
@@ -126,8 +126,8 @@ impl VTCompressionSession {
         width: i32,
         height: i32,
         codec_type: CMVideoCodecType,
-        encoder_specification: CFDictionary<CFString, CFType>,
-        source_image_buffer_attributes: CFDictionary<CFString, CFType>,
+        encoder_specification: Option<&CFDictionary<CFString, CFType>>,
+        source_image_buffer_attributes: Option<&CFDictionary<CFString, CFType>>,
         compressed_data_allocator: CFAllocator,
         output_callback: Option<*const VTCompressionOutputCallback>,
         output_callback_ref_con: Option<*mut c_void>,
@@ -138,8 +138,8 @@ impl VTCompressionSession {
             width,
             height,
             codec_type,
-            encoder_specification.as_concrete_TypeRef(),
-            source_image_buffer_attributes.as_concrete_TypeRef(),
+            encoder_specification.map_or(null(), |s| s.as_concrete_TypeRef()),
+            source_image_buffer_attributes.map_or(null(), |a| a.as_concrete_TypeRef()),
             compressed_data_allocator.as_concrete_TypeRef(),
             output_callback.unwrap_or(null()),
             output_callback_ref_con.unwrap_or(null_mut()),
@@ -169,8 +169,8 @@ impl VTCompressionSession {
         image_buffer: CVImageBuffer,
         presentation_time_stamp: CMTime,
         duration: CMTime,
-        frame_properties: CFDictionary<CFString, CFType>,
-        source_frame_refcon: *mut c_void,
+        frame_properties: Option<&CFDictionary<CFString, CFType>>,
+        source_frame_refcon: Option<*mut c_void>,
     ) -> Result<VTEncodeInfoFlags, OSStatus> {
         let mut info_flags_out: VTEncodeInfoFlags = VTEncodeInfoFlags::empty();
 
@@ -179,8 +179,8 @@ impl VTCompressionSession {
             image_buffer.as_concrete_TypeRef(),
             presentation_time_stamp,
             duration,
-            frame_properties.as_concrete_TypeRef(),
-            source_frame_refcon,
+            frame_properties.map_or(null(), |p| p.as_concrete_TypeRef()),
+            source_frame_refcon.unwrap_or(null_mut()),
             &mut info_flags_out,
         );
 
@@ -192,7 +192,7 @@ impl VTCompressionSession {
         image_buffer: CVImageBuffer,
         presentation_time_stamp: CMTime,
         duration: CMTime,
-        frame_properties: CFDictionary<CFString, CFType>,
+        frame_properties: Option<&CFDictionary<CFString, CFType>>,
         closure: F,
     ) -> Result<VTEncodeInfoFlags, OSStatus>
     where
@@ -211,7 +211,7 @@ impl VTCompressionSession {
                 image_buffer.as_concrete_TypeRef(),
                 presentation_time_stamp,
                 duration,
-                frame_properties.as_concrete_TypeRef(),
+                frame_properties.map_or(null(), |p| p.as_concrete_TypeRef()),
                 &mut info_flags_out,
                 &*handler,
             )
