@@ -27,11 +27,11 @@ use crate::{
 
 pub type VTDecompressionSessionRef = VTSessionRef;
 
-#[repr(C)]
+#[repr(C, packed(4))]
 #[derive(Debug, Copy, Clone)]
 pub struct VTDecompressionOutputCallbackRecord {
     pub decompressionOutputCallback: VTDecompressionOutputCallback,
-    pub decompressionOutputRefCon: Option<*mut c_void>,
+    pub decompressionOutputRefCon: *mut c_void,
 }
 
 pub type VTDecompressionOutputHandler = *const Block<(OSStatus, VTDecodeInfoFlags, CVImageBufferRef, CMTime, CMTime), ()>;
