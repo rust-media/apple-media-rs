@@ -47,7 +47,7 @@ pub struct opaqueCMSampleBuffer(c_void);
 
 pub type CMSampleBufferRef = *mut opaqueCMSampleBuffer;
 
-#[repr(C, align(4))]
+#[repr(C, packed(4))]
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct CMSampleTimingInfo {
     pub duration: CMTime,

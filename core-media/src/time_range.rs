@@ -7,7 +7,7 @@ use core_foundation::{
 
 use crate::time::CMTime;
 
-#[repr(C, align(4))]
+#[repr(C, packed(4))]
 #[derive(Clone, Copy, Debug, Default)]
 pub struct CMTimeRange {
     pub start: CMTime,
@@ -40,7 +40,7 @@ extern "C" {
     pub fn CMTimeRangeShow(range: CMTimeRange);
 }
 
-#[repr(C, align(4))]
+#[repr(C, packed(4))]
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct CMTimeMapping {
     pub source: CMTimeRange,

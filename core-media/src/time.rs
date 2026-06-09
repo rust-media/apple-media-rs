@@ -19,7 +19,7 @@ pub const kCMTimeFlags_NegativeInfinity: CMTimeFlags = 1 << 3;
 pub const kCMTimeFlags_Indefinite: CMTimeFlags = 1 << 4;
 pub const kCMTimeFlags_ImpliedValueFlagsMask: CMTimeFlags = kCMTimeFlags_PositiveInfinity | kCMTimeFlags_NegativeInfinity | kCMTimeFlags_Indefinite;
 
-#[repr(C, align(4))]
+#[repr(C, packed(4))]
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct CMTime {
     pub value: CMTimeValue,

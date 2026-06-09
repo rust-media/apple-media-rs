@@ -195,7 +195,7 @@ pub const kCMVideoCodecType_DisparityHEVC: CMVideoCodecType = fourcc(b"dish");
 pub const kCMVideoCodecType_DepthHEVC: CMVideoCodecType = fourcc(b"deph");
 pub const kCMVideoCodecType_AV1: CMVideoCodecType = fourcc(b"av01");
 
-#[repr(C, align(4))]
+#[repr(C, packed(4))]
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct CMVideoDimensions {
     pub width: i32,

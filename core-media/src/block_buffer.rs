@@ -34,12 +34,12 @@ pub struct OpaqueCMBlockBuffer(c_void);
 
 pub type CMBlockBufferRef = *mut OpaqueCMBlockBuffer;
 
-#[repr(C, align(4))]
+#[repr(C, packed(4))]
 pub struct CMBlockBufferCustomBlockSource {
     pub version: u32,
-    pub AllocateBlock: extern "C" fn(*mut c_void, size_t) -> *mut c_void,
-    pub FreeBlock: extern "C" fn(*mut c_void, *mut c_void, size_t),
-    pub refcon: Option<*mut c_void>,
+    pub AllocateBlock: Option<extern "C" fn(refcon: *mut c_void, size_in_bytes: usize) -> *mut c_void>,
+    pub FreeBlock: Option<extern "C" fn(refcon: *mut c_void, doomed_memory_block: *mut c_void, size_in_bytes: usize)>,
+    pub refCon: *mut c_void,
 }
 
 pub const kCMBlockBufferCustomBlockSourceVersion: u32 = 0;
@@ -271,7 +271,8 @@ impl CMBlockBuffer {
     #[inline]
     pub unsafe fn append_memory_block(
         &self,
-        memory_block: &[u8],
+        memory_block: Option<*const c_void>,
+        block_length: size_t,
         custom_block_source: Option<*const CMBlockBufferCustomBlockSource>,
         offset_to_data: size_t,
         data_length: size_t,
@@ -280,8 +281,8 @@ impl CMBlockBuffer {
         unsafe {
             let status = CMBlockBufferAppendMemoryBlock(
                 self.as_concrete_TypeRef(),
-                memory_block.as_ptr() as *const c_void,
-                memory_block.len() as size_t,
+                memory_block.unwrap_or(null()),
+                block_length,
                 kCFAllocatorDefault,
                 custom_block_source.unwrap_or(null()),
                 offset_to_data,
